@@ -1,0 +1,50 @@
+# Multi-stage build for production optimization
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (including dev dependencies for build)
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Remove development files
+RUN rm -rf .git .github .vscode node_modules/.cache
+
+# Production stage
+FROM node:18-alpine AS production
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S office -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder --chown=office:nodejs /app .
+
+# Create necessary directories
+RUN mkdir -p logs Uploads/profile_pictures Uploads/voice_complaints && \
+    chown -R office:nodejs logs Uploads
+
+# Switch to non-root user
+USER office
+
+# Expose port
+EXPOSE 4000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:4000/health || exit 1
+
+# Start application with PM2 in production mode
+CMD ["npm", "run", "pm2:start"] 

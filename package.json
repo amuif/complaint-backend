@@ -1,0 +1,59 @@
+{
+  "name": "office-management-system",
+  "version": "2.0.0",
+  "description": "Office Management System with Citizen Portal - Production Ready",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "setup": "node scripts/system_setup.js",
+    "setup:db": "node scripts/database_queries.js",
+    "setup:data": "node scripts/sample_data_insertion.js",
+    "health": "node scripts/system_setup.js health",
+    "docker:build": "docker build -t office-management-system .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "office-management",
+    "citizen-portal",
+    "complaints",
+    "ratings",
+    "feedback",
+    "production-ready"
+  ],
+  "author": "Office Management Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "mysql2": "^3.14.1",
+    "pdfkit": "^0.17.1",
+    "sequelize": "^6.37.7",
+    "uuid": "^11.1.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.6.2"
+  }
+}
