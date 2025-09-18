@@ -102,7 +102,6 @@ router.get(
   restrictTo('SuperAdmin', 'SuperAdminSuppoerter', 'Editor'),
   logAdmins
 );
-//oraganization api
 
 //sectors
 router.post(
@@ -147,6 +146,7 @@ router.delete(
     upload.fields([{ name: 'profile_picture', maxCount: 1 }]),
     updateDivision
   ));
+
 //departments
 router.post(
   '/department',
@@ -187,6 +187,7 @@ router.post(
   restrictTo('SuperAdmin', 'SuperAdminSuppoerter'),
   createSubcity
 );
+
 // Employee management routes (Admin access required)
 router.get(
   '/employees',

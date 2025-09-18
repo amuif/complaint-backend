@@ -979,10 +979,11 @@ const publicController = {
 
         const {
           subcity_id,
-          sector_leader_id,
-          director_id,
-          team_leader_id,
-          expert_id,
+          sector_id,
+          division_id,
+          department_id,
+          team_id,
+          employee_id,
           overall_rating,
           courtesy,
           punctuality,
@@ -1001,10 +1002,10 @@ const publicController = {
           full_name: full_name || 'Anonymous',
           phone_number: phone_number || 'Anonymous',
           subcity_id: subcity_id,
-          sector_id: sector_leader_id,
-          division_id: director_id,
-          department_id: team_leader_id,
-          employee_id: expert_id || null,
+          sector_id: sector_id,
+          division_id: division_id,
+          department_id: department_id,
+          employee_id: employee_id || null,
           service_type: 'General Service Rating',
           overall_rating: overall_rating,
           courtesy: courtesy,
@@ -1165,7 +1166,7 @@ const publicController = {
           employee_id,
           feedback_text: feedback_text,
           feedback_source: feedback_source,
-          status: 'submitted',
+          status: 'new',
 
           subcity,
           service_exprienced,
@@ -1174,7 +1175,6 @@ const publicController = {
           is_anonymous: full_name ? false : true,
 
           trackingCode,
-          status: 'pending',
         });
 
         await ActivityLogService.logCreate(

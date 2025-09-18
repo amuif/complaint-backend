@@ -42,6 +42,7 @@ const addProfilePictureUrl = (entity) => {
 const adminLogin = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log(req.body);
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password are required' });
@@ -49,12 +50,15 @@ const adminLogin = async (req, res) => {
 
     const admin = await Admin.findOne({ where: { username } });
     if (!admin) {
+      console.log('not valid admin');
+
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const isValidPassword = await bcrypt.compare(password, admin.password);
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      console.log('not valid password');
+      return res.status(401).json({ message: 'Invalid Password' });
     }
 
     const token = jwt.sign(
@@ -136,7 +140,6 @@ const createAdmin = async (req, res) => {
       last_name,
     } = req.body;
     const admin = req.user;
-    console.log(req.body);
 
     // Required fields
     if (!username || !password || !role) {
@@ -591,12 +594,24 @@ const getStatistics = async (req, res) => {
     const admin = req.user;
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const [
@@ -733,12 +748,24 @@ const exportReport = async (req, res) => {
     let where = {};
     const currentAdmin = await Admin.findByPk(admin.id);
 
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     if (date_from && date_to) {
@@ -1008,12 +1035,24 @@ const exportSubcity = async (req, res) => {
     let where = { subcity_id };
     const currentAdmin = await Admin.findByPk(admin.id);
 
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     let reportData = {};
@@ -1461,12 +1500,24 @@ const getRatingsAdmin = async (req, res) => {
 
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     // Apply date filtering
@@ -1476,8 +1527,8 @@ const getRatingsAdmin = async (req, res) => {
       if (date_to) whereClause.created_at[Op.lte] = new Date(date_to);
     }
 
-    const ratings = await Rating.findAll({
-      where: whereClause,
+    const ratings = await PublicRating.findAll({
+      where,
       include: [
         {
           model: Sector,
@@ -1523,6 +1574,7 @@ const getRatingsAdmin = async (req, res) => {
     //   created_at: rating.created_at,
     // }));
     //
+    console.log(ratings);
     res.json(ratings);
   } catch (error) {
     console.error('Error fetching ratings:', error);
@@ -1535,14 +1587,26 @@ const getPublicRatingsAdmin = async (req, res) => {
   try {
     const admin = req.user;
     const currentAdmin = await Admin.findByPk(admin.id);
-    const where = {};
+    let where = {};
 
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const ratings = await PublicRating.findAll({
@@ -1705,12 +1769,24 @@ const exportEmployees = async (req, res) => {
     let where = {};
 
     const currentAdmin = await Admin.findByPk(admin.id);
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const employees = await Employee.findAll({
@@ -1867,12 +1943,24 @@ const exportComplaints = async (req, res) => {
 
     let where = {};
     const currentAdmin = await Admin.findByPk(admin.id);
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const complaints = await PublicComplaint.findAll({
@@ -2019,16 +2107,28 @@ const exportFeedback = async (req, res) => {
       return res.status(400).json({ message: 'Invalid language. Use en, am, or af.' });
     }
 
-    const where = {};
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    let where = {};
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
-    const feedback = await Feedback.findAll({
+    const feedback = await PublicFeedback.findAll({
       where,
       attributes: [
         'id',

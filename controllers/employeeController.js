@@ -60,12 +60,25 @@ const getEmployeesAdmin = async (req, res) => {
     let where = {};
 
     const currentAdmin = await Admin.findByPk(admin.id);
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const employees = await Employee.findAll({
@@ -100,6 +113,7 @@ const getEmployeesAdmin = async (req, res) => {
       order: [['created_at', 'DESC']],
     });
 
+    console.log(employees);
     const employeesWithUrls = employees.map(addProfilePictureUrl);
 
     // Add hierarchy information to response

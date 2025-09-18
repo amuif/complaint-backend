@@ -4,13 +4,17 @@ const { Rating, Employee } = require('../models');
 const createRating = async (req, res) => {
   try {
     const {
-      employee_id,
       phone_number,
       courtesy,
       timeliness,
       knowledge,
       overall_experience,
       suggestions,
+      sector_id,
+      division_id,
+      department_id,
+      team_id,
+      employee_id,
     } = req.body;
     console.log(req.body);
 
@@ -44,6 +48,10 @@ const createRating = async (req, res) => {
       overall_experience,
       suggestions,
       rating_source: 'rating',
+      sector_id,
+      division_id,
+      department_id,
+      team_id,
     };
 
     const rating = await Rating.create(ratingData);

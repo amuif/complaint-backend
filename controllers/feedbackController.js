@@ -117,20 +117,33 @@ const getFeedbackAdmin = async (req, res) => {
     //     .json({ message: "Invalid language. Use en, am, or af." });
     // }
     //
-    const where = {};
-    const currentAdmin = await Admin.findByPk(admin.id);
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
-      }
-    }
-
     if (date_from && date_to) {
       where.created_at = {
         [Op.between]: [new Date(date_from), new Date(date_to)],
       };
+    }
+
+    let where = {};
+    const currentAdmin = await Admin.findByPk(admin.id);
+
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
+      }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
 
     const feedback = await PublicFeedback.findAll({
@@ -167,6 +180,7 @@ const getFeedbackAdmin = async (req, res) => {
       ],
       order: [['created_at', 'DESC']],
     });
+    console.log(feedback);
     res.json(feedback);
   } catch (error) {
     console.error('Error fetching feedback:', error);

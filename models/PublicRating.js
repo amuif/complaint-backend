@@ -34,6 +34,11 @@ const PublicRating = sequelize.define(
       allowNull: true,
       comment: 'Sector being rated',
     },
+    division_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'Division being rated',
+    },
     department_id: {
       type: DataTypes.INTEGER,
       allowNull: true,

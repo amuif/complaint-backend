@@ -144,14 +144,25 @@ const getComplaintsAdmin = async (req, res) => {
 
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
-        where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
+    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
+      if (!currentAdmin.subcity_id) {
+        if (currentAdmin.division_id) {
+          console.log('there is a division_id');
+          where.division_id = currentAdmin.division_id;
+        } else {
+          console.log('there is not a division_id');
+          where.sector_id = currentAdmin.sector_id;
+        }
+      } else {
+        if (currentAdmin.division_id) {
+          where.division_id = currentAdmin.division_id;
+        } else {
+          where.subcity_id = currentAdmin.subcity_id;
+        }
       }
+    } else {
+      console.warn('currentAdmin is null or role not allowed');
     }
-
     const publicComplaints = await PublicComplaint.findAll({
       where,
       include: [
