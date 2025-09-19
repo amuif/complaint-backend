@@ -9,6 +9,7 @@ const ActivityLog = require('./ActivityLogs');
 const PublicComplaint = require('./PublicComplaint');
 const PublicRating = require('./PublicRating');
 const PublicFeedback = require('./PublicFeedback');
+const ComplaintAttachment = require('./complaint-attachment');
 const Department = require('./Department');
 const Office = require('./Office');
 const Sector = require('./Sector');
@@ -34,6 +35,15 @@ Subcity.hasMany(Complaint, { foreignKey: 'subcity_id', as: 'complaints' });
 PublicComplaint.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
 Subcity.hasMany(PublicComplaint, { foreignKey: 'subcity_id', as: 'public_complaints' });
 
+// PublicComplaint <-> ComplaintAttachment
+PublicComplaint.hasOne(ComplaintAttachment, {
+  foreignKey: 'complaint_id',
+  as: 'attachments',
+});
+ComplaintAttachment.belongsTo(PublicComplaint, {
+  foreignKey: 'complaint_id',
+  as: 'complaint-attachment',
+});
 // Rating models
 Rating.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
 Subcity.hasMany(Rating, { foreignKey: 'subcity_id', as: 'ratings' });
@@ -229,6 +239,7 @@ module.exports = {
 
   // Public models
   PublicComplaint,
+  ComplaintAttachment,
   PublicRating,
   PublicFeedback,
   Department,

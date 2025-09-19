@@ -1,11 +1,11 @@
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const path = require('path');
-const crypto = require('crypto');
 const { Op } = require('sequelize');
 const ActivityLogService = require('../services/adminLogsService');
 const {
   PublicComplaint,
+  ComplaintAttachment,
   PublicRating,
   PublicFeedback,
   Department,
@@ -15,7 +15,6 @@ const {
   Division,
   Team,
 } = require('../models');
-const { off } = require('process');
 const Subcity = require('../models/Subcity');
 
 // Helper function to generate tracking codes
@@ -24,14 +23,6 @@ const generateTrackingCode = () => {
   const timestamp = Date.now().toString().slice(-6);
   const random = Math.random().toString(36).substring(2, 5).toUpperCase();
   return `${prefix}-${timestamp}-${random}`;
-};
-
-// Helper function to generate reference numbers
-const generateReferenceNumber = () => {
-  const prefix = 'FB';
-  const year = new Date().getFullYear();
-  const random = Math.random().toString().padStart(5, '0').slice(-5);
-  return `${prefix}-${year}-${random}`;
 };
 
 // Configure multer for voice complaints
@@ -762,6 +753,7 @@ const publicController = {
           subcity_id,
         } = req.body;
 
+        const attachmentFile = req.files.attachment ? req.files.attachment[0] : null;
         const trackingCode = generateTrackingCode();
         const complaintData = {
           complaint_name: complaint_name,
@@ -783,6 +775,14 @@ const publicController = {
         };
 
         const complaint = await PublicComplaint.create(complaintData);
+        if (attachmentFile) {
+          await ComplaintAttachment.create({
+            complaint_id: complaint.id,
+            file_path: attachmentFile.path,
+            file_type: attachmentFile.mimetype,
+          });
+        }
+
         await ActivityLogService.logCreate(
           'complaint',
           complaint.id,
@@ -817,8 +817,7 @@ const publicController = {
   ],
 
   // Submit a voice complaint
-  submitVoiceComplaint: [
-    voiceUpload.single('voice_file'),
+  submitvoicecomplaint: [
     ...voicecomplaintValidation,
     async (req, res) => {
       try {
@@ -831,12 +830,16 @@ const publicController = {
           });
         }
 
-        if (!req.file) {
+        // Multer with fields returns req.files
+        if (!req.files || !req.files.voice_file) {
           return res.status(400).json({
             success: false,
             message: 'Voice file is required',
           });
         }
+
+        const voiceFile = req.files.voice_file[0];
+        const attachmentFile = req.files.attachment ? req.files.attachment[0] : null;
 
         const {
           complainant_name,
@@ -854,19 +857,20 @@ const publicController = {
           desired_action,
         } = req.body;
 
-        // const trackingCode = generateTrackingCode();
+        console.log(req.body);
 
         const complaint = await PublicComplaint.create({
           complaint_name: complainant_name,
           phone_number,
           woreda,
-          complaint_description: 'Voice complaint - please listen to audio file',
-          complaint_date: new Date(),
+          complaint_description: 'voice complaint - please listen to audio file',
+          complaint_date: complaint_date ? new Date(complaint_date) : new Date(),
           office,
           desired_action,
           tracking_code: phone_number,
           complaint_source,
-          voice_note: req.file.path,
+          voice_note: voiceFile.path,
+          attachment: attachmentFile ? attachmentFile.path : null,
           sector_id: parseForeignKey(sector_id),
           division_id: parseForeignKey(division_id),
           department_id: parseForeignKey(department_id),
@@ -874,6 +878,13 @@ const publicController = {
           subcity_id: parseForeignKey(subcity_id),
           status: 'submitted',
         });
+        if (attachmentFile) {
+          await ComplaintAttachment.create({
+            complaint_id: complaint.id,
+            file_path: attachmentFile.path,
+            file_type: attachmentFile.mimetype,
+          });
+        }
         await ActivityLogService.logCreate(
           'complaint',
           complaint.id,
@@ -894,7 +905,8 @@ const publicController = {
             tracking_code: phone_number,
             complaint_id: complaint.id,
             status: 'pending',
-            voice_file: req.file.filename,
+            voice_file: voiceFile.filename,
+            attachment: attachmentFile ? attachmentFile.filename : null,
           },
         });
       } catch (error) {
@@ -906,7 +918,6 @@ const publicController = {
       }
     },
   ],
-
   // Track complaint by tracking code or phone number
   trackComplaint: async (req, res) => {
     try {

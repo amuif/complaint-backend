@@ -4,6 +4,7 @@ const {
   Sector,
   Employee,
   PublicComplaint,
+  ComplaintAttachment,
   Division,
   Team,
   Office,
@@ -195,6 +196,11 @@ const getComplaintsAdmin = async (req, res) => {
         {
           model: Office,
           as: 'office',
+        },
+        {
+          model: ComplaintAttachment,
+          as: 'attachment', // matches your association alias
+          attributes: ['id', 'file_path', 'file_type', 'uploaded_at'],
         },
       ],
 

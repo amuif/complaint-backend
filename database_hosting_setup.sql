@@ -420,6 +420,19 @@ CREATE TABLE IF NOT EXISTS public_complaints (
   COLLATE=utf8mb4_unicode_ci
   COMMENT='Public citizen complaint system';
 
+CREATE TABLE IF NOT EXISTS complaint_attachments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  complaint_id INT NOT NULL COMMENT 'Related complaint',
+  file_path VARCHAR(255) NOT NULL COMMENT 'Attachment file path',
+  file_type VARCHAR(100) COMMENT 'MIME type (pdf, docx, xlsx, etc.)',
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (complaint_id) REFERENCES public_complaints(id) ON DELETE CASCADE,
+  INDEX idx_complaint_attachment_complaint (complaint_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci
+  COMMENT='Attachments for public complaints';
+
 -- =====================================
 -- FEEDBACK SYSTEM TABLES
 -- =====================================

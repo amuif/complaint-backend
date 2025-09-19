@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const publicController = require('../controllers/publicController');
 const rateLimit = require('express-rate-limit');
+const upload = require('../middleware/upload');
 
 // Rate limiting for public endpoints
 const publicRateLimit = rateLimit({
@@ -78,6 +79,8 @@ router.get('/teams/:teamId/employees', publicController.getEmployeesByTeam);
 router.post(
   '/complaints/submit',
   // submissionRateLimit,
+  upload.fields([{ name: 'attachment', maxCount: 10 }]),
+
   publicController.submitComplaint
 );
 
@@ -85,7 +88,11 @@ router.post(
 router.post(
   '/complaints/submit-voice',
   // submissionRateLimit,
-  publicController.submitVoiceComplaint
+  upload.fields([
+    { name: 'voice_file', maxCount: 1 },
+    { name: 'attachment', maxCount: 1 },
+  ]),
+  publicController.submitvoicecomplaint
 );
 
 // Track complaint by tracking code or phone number
