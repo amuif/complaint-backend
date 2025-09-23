@@ -80,7 +80,6 @@ router.post(
   '/complaints/submit',
   // submissionRateLimit,
   upload.fields([{ name: 'attachment', maxCount: 10 }]),
-
   publicController.submitComplaint
 );
 

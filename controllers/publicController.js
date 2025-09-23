@@ -753,7 +753,14 @@ const publicController = {
           subcity_id,
         } = req.body;
 
-        const attachmentFile = req.files.attachment ? req.files.attachment[0] : null;
+        let attachmentFile = null;
+
+        if (req.files && req.files.attachment) {
+          attachmentFile = req.files.attachment[0];
+        } else if (req.file) {
+          // If you used upload.single('attachment')
+          attachmentFile = req.file;
+        }
         const trackingCode = generateTrackingCode();
         const complaintData = {
           complaint_name: complaint_name,
@@ -839,7 +846,14 @@ const publicController = {
         }
 
         const voiceFile = req.files.voice_file[0];
-        const attachmentFile = req.files.attachment ? req.files.attachment[0] : null;
+        let attachmentFile = null;
+
+        if (req.files && req.files.attachment) {
+          attachmentFile = req.files.attachment[0];
+        } else if (req.file) {
+          // If you used upload.single('attachment')
+          attachmentFile = req.file;
+        }
 
         const {
           complainant_name,
