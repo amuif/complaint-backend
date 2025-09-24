@@ -752,6 +752,7 @@ const publicController = {
           employee_id,
           subcity_id,
         } = req.body;
+        console.log(req.body);
 
         let attachmentFile = null;
 
@@ -779,6 +780,7 @@ const publicController = {
           department_id: parseForeignKey(department_id),
           employee_id: parseForeignKey(employee_id),
           subcity_id: parseForeignKey(subcity_id),
+          created_at: complaint_date ? new Date(complaint_date) : new Date(),
         };
 
         const complaint = await PublicComplaint.create(complaintData);
@@ -891,6 +893,7 @@ const publicController = {
           employee_id: parseForeignKey(employee_id),
           subcity_id: parseForeignKey(subcity_id),
           status: 'submitted',
+          created_at: complaint_date || new Date(),
         });
         if (attachmentFile) {
           await ComplaintAttachment.create({
