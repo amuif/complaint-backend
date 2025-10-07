@@ -45,8 +45,14 @@ router.get('/departments/:departmentId/teams', publicController.getTeamsByDepart
 
 router.get('/departments', publicController.getDepartments);
 
-// Get all subcities
+// Get subcities data
 router.get('/subcities', publicController.getSubcities);
+router.get('/subcities/:subcityId', publicController.getSubcityAdmin);
+router.get('/subcities/:subcityId/directors', publicController.getDivisionsBySubcityAdmin);
+router.get(
+  '/subcities/:subcityId/division/:divisionId',
+  publicController.getDepartmentsBySubcityDivisions
+);
 
 // Get offices by department
 router.get('/departments/:departmentId/offices', publicController.getOfficesByDepartment);

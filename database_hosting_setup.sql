@@ -19,6 +19,22 @@ SET sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVIS
 -- =====================================
 -- CORE SYSTEM TABLES
 -- =====================================
+-- subcities
+CREATE TABLE IF NOT EXISTS subcities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name_en VARCHAR(100) NOT NULL COMMENT 'subcity name in English',
+    name_am VARCHAR(100) NOT NULL COMMENT 'subcity name in Amharic',
+    name_af VARCHAR(100) NOT NULL COMMENT 'subcity name in Afan Oromo',
+    appointed_person_en VARCHAR(100) NOT NULL COMMENT 'Sector leader name in English',
+    appointed_person_am VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Amharic',
+    appointed_person_af VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Oromo',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_unicode_ci 
+  COMMENT='Subcity table';
+
 
 -- Sector table - Multi-language support
 CREATE TABLE IF NOT EXISTS sectors (
@@ -30,7 +46,7 @@ CREATE TABLE IF NOT EXISTS sectors (
     appointed_person_am VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Amharic',
     appointed_person_af VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Oromo',
     office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
-  profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
+    profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB 
@@ -44,18 +60,20 @@ CREATE TABLE IF NOT EXISTS divisions (
   name_en VARCHAR(100) NOT NULL COMMENT 'Division(Director) name in English',
   name_am VARCHAR(100) NOT NULL COMMENT 'Division(Director) name in Amharic',
   name_af VARCHAR(100) NOT NULL COMMENT 'Division(Director) name in Afan Oromo',
-     appointed_person_en VARCHAR(100) NOT NULL COMMENT 'division leader name in English',
-    appointed_person_am VARCHAR(100) NOT NULL COMMENT 'division leader name in Amharic',
-    appointed_person_af VARCHAR(100) NOT NULL COMMENT 'division leader name in Oromo',
-    office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+  appointed_person_en VARCHAR(100) NOT NULL COMMENT 'division leader name in English',
+  appointed_person_am VARCHAR(100) NOT NULL COMMENT 'division leader name in Amharic',
+  appointed_person_af VARCHAR(100) NOT NULL COMMENT 'division leader name in Oromo',
+  office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
   profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
- 
   sector_id INT NULL COMMENT 'Reference to sector',
+  subcity_id INT COMMENT 'Subcity jurisdiction (required for SubCity* roles, NULL for super roles)',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (sector_id) REFERENCES sectors(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (subcity_id) REFERENCES subcities(id) ON DELETE SET NULL,
   INDEX idx_division_sector (sector_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci 
+
 COMMENT='Divisions table';
 
 -- Departments table - Multi-language support
@@ -64,17 +82,19 @@ CREATE TABLE IF NOT EXISTS departments (
   name_en VARCHAR(100) NOT NULL COMMENT 'Department(team Leader) name in English',
   name_am VARCHAR(100) NOT NULL COMMENT 'Department(team Leader) name in Amharic',
   name_af VARCHAR(100) NOT NULL COMMENT 'Department(team Leader) name in Afan Oromo',
-   appointed_person_en VARCHAR(100) NOT NULL COMMENT 'department leader name in English',
-    appointed_person_am VARCHAR(100) NOT NULL COMMENT 'department leader name in Amharic',
-    appointed_person_af VARCHAR(100) NOT NULL COMMENT 'department leader name in Oromo',
-        office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+  appointed_person_en VARCHAR(100) NOT NULL COMMENT 'department leader name in English',
+  appointed_person_am VARCHAR(100) NOT NULL COMMENT 'department leader name in Amharic',
+  appointed_person_af VARCHAR(100) NOT NULL COMMENT 'department leader name in Oromo',
+  office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
   profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
   sector_id INT NULL COMMENT 'References to sector',
   division_id INT NULL COMMENT 'Reference to division',
+  subcity_id INT COMMENT 'Subcity jurisdiction (required for SubCity* roles, NULL for super roles)',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (division_id) REFERENCES divisions(id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (sector_id) REFERENCES sectors(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (subcity_id) REFERENCES subcities(id) ON DELETE SET NULL,
   INDEX idx_dept_name_en (name_en),
   INDEX departments_division_id (division_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci 
@@ -136,22 +156,6 @@ CREATE TABLE IF NOT EXISTS offices (
   INDEX idx_office_number (office_number)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci 
 COMMENT='Offices table with department relationships';
-
--- subcities
-CREATE TABLE IF NOT EXISTS subcities (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name_en VARCHAR(100) NOT NULL COMMENT 'subcity name in English',
-    name_am VARCHAR(100) NOT NULL COMMENT 'subcity name in Amharic',
-    name_af VARCHAR(100) NOT NULL COMMENT 'subcity name in Afan Oromo',
-    appointed_person_en VARCHAR(100) NOT NULL COMMENT 'Sector leader name in English',
-    appointed_person_am VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Amharic',
-    appointed_person_af VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Oromo',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB 
-  DEFAULT CHARSET=utf8mb4 
-  COLLATE=utf8mb4_unicode_ci 
-  COMMENT='Subcity table';
 
 
 -- =====================================

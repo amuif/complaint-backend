@@ -123,6 +123,84 @@ const feedbackValidation = [
 
 const publicController = {
   // =================================
+  // Subcity apis
+  // =================================
+  // Get all unique subcities
+  getSubcities: async (req, res) => {
+    try {
+      const subcities = await Subcity.findAll({
+        order: [['name_en', 'ASC']],
+        raw: true,
+      });
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Loaded ${subcities.length} subcities from database`);
+      }
+
+      res.json(subcities);
+    } catch (error) {
+      console.error('Subcity fetch error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch subcities',
+      });
+    }
+  },
+  // get sub city appointed person
+  getSubcityAdmin: async (req, res) => {
+    try {
+      const { subcityId } = req.params;
+      const subcity = await Subcity.findByPk(subcityId);
+      if (!subcity) return res.status(404).json({ message: "Coudn't find appointed person" });
+      res.json(subcity);
+    } catch (error) {
+      console.error('Subcity person fetch error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch appointed person',
+      });
+    }
+  },
+  getDivisionsBySubcityAdmin: async (req, res) => {
+    const { subcityId } = req.params;
+    try {
+      const direcors = await Division.findAll({
+        where: { subcity_id: subcityId },
+        include: [
+          {
+            model: Subcity,
+            as: 'subcity',
+          },
+        ],
+      });
+      res.json(direcors);
+    } catch (error) {
+      console.error('Fetching Subcity director by admin error:', error);
+      res.status(500).json({
+        message: 'Failed to fetch director through appointed person',
+      });
+    }
+  },
+  getDepartmentsBySubcityDivisions: async (req, res) => {
+    const { subcityId, divisionId } = req.params;
+    try {
+      const departments = await Department.findAll({
+        where: { subcity_id: subcityId, division_id: divisionId },
+        include: [
+          {
+            model: Subcity,
+            as: 'subcity',
+          },
+        ],
+      });
+      res.json(departments);
+    } catch (error) {
+      console.error('Fetching Subcity deparmtent by admin division:', error);
+      res.status(500).json({
+        message: 'Failed to fetch depratment through subcity division',
+      });
+    }
+  }, // =================================
   // DEPARTMENTS & OFFICES
   // =================================
 
@@ -697,28 +775,6 @@ const publicController = {
     }
   },
 
-  // Get all unique subcities
-
-  getSubcities: async (req, res) => {
-    try {
-      const subcities = await Subcity.findAll({
-        order: [['name_en', 'ASC']],
-        raw: true,
-      });
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`Loaded ${subcities.length} subcities from database`);
-      }
-
-      res.json(subcities);
-    } catch (error) {
-      console.error('Subcity fetch error:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to fetch subcities',
-      });
-    }
-  },
   // =================================
   // PUBLIC COMPLAINTS
   // =================================

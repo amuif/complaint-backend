@@ -217,7 +217,11 @@ Division.hasMany(PublicFeedback, {
   foreignKey: 'division_id',
   as: 'public_feedbacks',
 });
+Division.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
+Subcity.hasMany(Division, { foreignKey: 'subcity_id', as: 'divisions' });
 
+Department.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
+Subcity.hasMany(Department, { foreignKey: 'subcity_id', as: 'departments' });
 Department.hasMany(PublicFeedback, {
   foreignKey: 'department_id',
   as: 'public_feedbacks',
