@@ -10,8 +10,12 @@ const createDepartment = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_af,
+      office_location_am,
+      subcity_id,
       sector_id,
+      division_id,
     } = req.body;
     if (
       !name_am ||
@@ -20,7 +24,9 @@ const createDepartment = async (req, res) => {
       !appointed_person_af ||
       !appointed_person_en ||
       !appointed_person_am ||
-      !office_number
+      !office_location_en ||
+      !office_location_af ||
+      !office_location_am
     ) {
       return res.status(400).json({ message: 'Enter team name in the three languages' });
     }
@@ -33,9 +39,13 @@ const createDepartment = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_af,
+      office_location_am,
+      subcity_id,
       profile_picture: uploadedProfilePicture,
       sector_id,
+      division_id,
     };
     await Department.create(departmentData);
     await ActivityLogService.logCreate(

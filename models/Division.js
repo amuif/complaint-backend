@@ -9,10 +9,11 @@ const Division = sequelize.define(
     name_am: { type: DataTypes.STRING(100), allowNull: false },
     name_af: { type: DataTypes.STRING(100), allowNull: false },
     appointed_person_en: { type: DataTypes.STRING(100), allowNull: false },
-    appointed_person_af: { type: DataTypes.STRING(100), allowNull: false },
     appointed_person_am: { type: DataTypes.STRING(100), allowNull: false },
-    office_number: { type: DataTypes.STRING(100), allowNull: false },
-    profile_picture: { type: DataTypes.STRING(255), allowNull: true },
+    appointed_person_af: { type: DataTypes.STRING(100), allowNull: false },
+    office_location_en: { type: DataTypes.STRING(50), allowNull: false },
+    office_location_am: { type: DataTypes.STRING(50), allowNull: false },
+    office_location_af: { type: DataTypes.STRING(50), allowNull: false },
     subcity_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -30,49 +31,82 @@ const Division = sequelize.define(
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     indexes: [
-      { fields: ['sector_id'], name: 'idx_division_sector', unique: false },
-      { fields: ['subcity_id'], name: 'idx_division_subcity', unique: false }, // Added index
+      { fields: ['sector_id'], name: 'idx_division_sector' },
+      { fields: ['subcity_id'], name: 'idx_division_subcity' },
     ],
   }
 );
 
 Division.associate = (models) => {
-  // ✅ CORRECT: Sector relationship
+  // Organizational Structure (belongsTo)
   Division.belongsTo(models.Sector, {
     foreignKey: 'sector_id',
     as: 'sector',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
   });
 
-  // ✅ CORRECT: Subcity relationship with proper foreign key
   Division.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id', // Fixed: using subcity_id
+    foreignKey: 'subcity_id',
     as: 'subcity',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
   });
 
-  // ✅ Add hasMany relationships
+  // Organizational Structure (hasMany)
   Division.hasMany(models.Department, {
     foreignKey: 'division_id',
     as: 'departments',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
   });
 
+  Division.hasMany(models.Team, {
+    foreignKey: 'division_id',
+    as: 'teams',
+  });
+
+  Division.hasMany(models.Office, {
+    foreignKey: 'division_id',
+    as: 'offices',
+  });
+
+  // People
   Division.hasMany(models.Admin, {
     foreignKey: 'division_id',
     as: 'admins',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
   });
 
   Division.hasMany(models.Employee, {
     foreignKey: 'division_id',
     as: 'employees',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
+  });
+
+  // Complaints
+  Division.hasMany(models.Complaint, {
+    foreignKey: 'division_id',
+    as: 'internal_complaints',
+  });
+
+  Division.hasMany(models.PublicComplaint, {
+    foreignKey: 'division_id',
+    as: 'public_complaints',
+  });
+
+  // Feedback
+  Division.hasMany(models.Feedback, {
+    foreignKey: 'division_id',
+    as: 'internal_feedbacks',
+  });
+
+  Division.hasMany(models.PublicFeedback, {
+    foreignKey: 'division_id',
+    as: 'public_feedbacks',
+  });
+
+  // Ratings
+  Division.hasMany(models.Rating, {
+    foreignKey: 'division_id',
+    as: 'internal_ratings',
+  });
+
+  Division.hasMany(models.PublicRating, {
+    foreignKey: 'division_id',
+    as: 'public_ratings',
   });
 };
 

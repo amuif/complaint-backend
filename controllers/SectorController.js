@@ -17,8 +17,7 @@ const createSector = async (req, res) => {
       !name_af ||
       !appointed_person_af ||
       !appointed_person_en ||
-      !appointed_person_am ||
-      !office_number
+      !appointed_person_am 
     ) {
       return res.status(400).json({ message: 'Enter sector name in the three languages' });
     }

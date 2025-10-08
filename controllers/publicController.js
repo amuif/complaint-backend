@@ -200,7 +200,29 @@ const publicController = {
         message: 'Failed to fetch depratment through subcity division',
       });
     }
-  }, // =================================
+  },
+
+  getEmployeesBySubcity: async (req, res) => {
+    const { subcityId, divisionId, departmentId } = req.params;
+    try {
+      const departments = await Employee.findAll({
+        where: { subcity_id: subcityId, division_id: divisionId, department_id: departmentId },
+        include: [
+          {
+            model: Subcity,
+            as: 'subcity',
+          },
+        ],
+      });
+      res.json(departments);
+    } catch (error) {
+      console.error('Fetching Subcity deparmtent by admin division:', error);
+      res.status(500).json({
+        message: 'Failed to fetch employees through subcity division',
+      });
+    }
+  },
+  // =================================
   // DEPARTMENTS & OFFICES
   // =================================
 

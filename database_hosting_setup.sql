@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS sectors (
     appointed_person_en VARCHAR(100) NOT NULL COMMENT 'Sector leader name in English',
     appointed_person_am VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Amharic',
     appointed_person_af VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Oromo',
-    office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+    office_location_en VARCHAR(50) NULL COMMENT 'Sector leader office english',
+    office_location_am VARCHAR(50) NULL COMMENT 'Sector leader office amharic',
+    office_location_af VARCHAR(50) NULL COMMENT 'Sector leader office oromic',
     profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -63,7 +65,9 @@ CREATE TABLE IF NOT EXISTS divisions (
   appointed_person_en VARCHAR(100) NOT NULL COMMENT 'division leader name in English',
   appointed_person_am VARCHAR(100) NOT NULL COMMENT 'division leader name in Amharic',
   appointed_person_af VARCHAR(100) NOT NULL COMMENT 'division leader name in Oromo',
-  office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+  office_location_en VARCHAR(50) NULL COMMENT 'Sector leader office english',
+  office_location_am VARCHAR(50) NULL COMMENT 'Sector leader office amharic',
+  office_location_af VARCHAR(50) NULL COMMENT 'Sector leader office oromic',
   profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
   sector_id INT NULL COMMENT 'Reference to sector',
   subcity_id INT COMMENT 'Subcity jurisdiction (required for SubCity* roles, NULL for super roles)',
@@ -85,7 +89,9 @@ CREATE TABLE IF NOT EXISTS departments (
   appointed_person_en VARCHAR(100) NOT NULL COMMENT 'department leader name in English',
   appointed_person_am VARCHAR(100) NOT NULL COMMENT 'department leader name in Amharic',
   appointed_person_af VARCHAR(100) NOT NULL COMMENT 'department leader name in Oromo',
-  office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+  office_location_en VARCHAR(50) NULL COMMENT 'Sector leader office english',
+  office_location_am VARCHAR(50) NULL COMMENT 'Sector leader office amharic',
+  office_location_af VARCHAR(50) NULL COMMENT 'Sector leader office oromic',
   profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
   sector_id INT NULL COMMENT 'References to sector',
   division_id INT NULL COMMENT 'Reference to division',
@@ -105,16 +111,16 @@ CREATE TABLE IF NOT EXISTS teams (
   name_en VARCHAR(100) NOT NULL COMMENT 'Team name in English',
   name_am VARCHAR(100) NOT NULL COMMENT 'Team name in Amharic',
   name_af VARCHAR(100) NOT NULL COMMENT 'Team name in Afan Oromo',
-     appointed_person_en VARCHAR(100) NOT NULL COMMENT 'team leader name in English',
-    appointed_person_am VARCHAR(100) NOT NULL COMMENT 'team leader name in Amharic',
-    appointed_person_af VARCHAR(100) NOT NULL COMMENT 'team leader name in Oromo',
-    office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
+  appointed_person_en VARCHAR(100) NOT NULL COMMENT 'team leader name in English',
+  appointed_person_am VARCHAR(100) NOT NULL COMMENT 'team leader name in Amharic',
+  appointed_person_af VARCHAR(100) NOT NULL COMMENT 'team leader name in Oromo',
+  office_number VARCHAR(50) NOT NULL COMMENT 'Sector leader office',
   profile_picture VARCHAR(255) COMMENT 'Profile picture URL',
   sector_id INT NULL COMMENT 'Reference to sector',
   division_id INT NULL COMMENT 'Reference to division',
   department_id INT NULL COMMENT 'Reference to department',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    office_id INT COMMENT 'Reference to office',
+  office_id INT COMMENT 'Reference to office',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (sector_id) REFERENCES sectors(id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (division_id) REFERENCES divisions(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -746,81 +752,133 @@ CREATE FULLTEXT INDEX IF NOT EXISTS ft_employee_names ON employees(first_name_en
 -- Insert sample sectors
 INSERT INTO sectors (
   name_en, name_am, name_af,
-  appointed_person_en, appointed_person_am, appointed_person_af, office_number, profile_picture
+  appointed_person_en, appointed_person_am, appointed_person_af, 
+  office_location_en, office_location_am, office_location_af,
+  profile_picture
 ) VALUES
-('General Director', 'ዋና ዳይሬክተር', 'Daayrektara Olmaa', 'Ato Kibebew Mideksa Gutema', 'አቶ ክበበው ሚደቅሳ ጉተማ"', 'Obbo Kibebew Mideqsa Gutamaa','1',''),
-('Head of Administration and Finance Office', 'የአስተዳደርና ፋይናንስ ጽ/ቤት ኃላፊ', 'I/tu Waajjira Bulchiinsaa fi Faayinaansii', 'Ms. Hawa Wabi Abdirahman', 'ወ/ሮ ሃዋ ዋቢ አብድርሃማን', 'Ad/ti Hawaa Waabii Abdirahmaan','12th floor 05',''),
-('Deputy Director', 'የመንገድ ደህንነት ምህንድስና እና ፓርኪንግ ዘርፍ ም/ ዋና ዳይሬክተር ', 'Itti aanaa Daayrektara Olmaa, Damee Injinariingii fi Paarkingii Nageenya Daandii', 'Elias Zerga Melka E/R', 'ኢ/ር ኤልያስ ዘርጋ መልካ ', "Injinar Eliyas Zargaa Mal'akaa",'11th floor 02',''),
-('Deputy Director, Road Safety Awareness. Fund Sector', 'የተከታዩ ዳይሬክተር', 'Daayrektara Itti Aanaa, Kutaa Beeksisawwanii… Mallaqaa', 'Ato Amare Tarekegn Metekiya', 'አቶ አማረ ታረቀኝ መተኪያ', 'Obbo Amaree Tarraqany Meetekiyaa','9th floor 02','');
--- Insert sample divisions
+('General Director', 'ዋና ዳይሬክተር', 'Daayrektara Olmaa', 
+ 'Ato Kibebew Mideksa Gutema', 'አቶ ክበበው ሚደቅሳ ጉተማ"', 'Obbo Kibebew Mideqsa Gutamaa',
+ '12th Floor Office 01', '12ኛ ፎቅ ግቢ 01', 'Barcuma 12ffaa Keessaa 01',
+  NULL),
+
+('Head of Administration and Finance Office', 'የአስተዳደርና ፋይናንስ ጽ/ቤት ኃላፊ', 'I/tu Waajjira Bulchiinsaa fi Faayinaansii', 
+ 'Ms. Hawa Wabi Abdirahman', 'ወ/ሮ ሃዋ ዋቢ አብድርሃማን', 'Ad/ti Hawaa Waabii Abdirahmaan',
+ '12th Floor Office 05', '12ኛ ፎቅ ግቢ 05', 'Barcuma 12ffaa Keessaa 05',
+ NULL),
+
+('Deputy Director', 'የመንገድ ደህንነት ምህንድስና እና ፓርኪንግ ዘርፍ ም/ ዋና ዳይሬክተር ', 'Itti aanaa Daayrektara Olmaa, Damee Injinariingii fi Paarkingii Nageenya Daandii', 
+ 'Elias Zerga Melka E/R', 'ኢ/ር ኤልያስ ዘርጋ መልካ ', "Injinar Eliyas Zargaa Mal'akaa",
+ '11th Floor Office 02', '11ኛ ፎቅ ግቢ 02', 'Barcuma 11ffaa Keessaa 02',
+ NULL),
+
+('Deputy Director, Road Safety Awareness. Fund Sector', 'የተከታዩ ዳይሬክተር', 'Daayrektara Itti Aanaa, Kutaa Beeksisawwanii… Mallaqaa', 
+ 'Ato Amare Tarekegn Metekiya', 'አቶ አማረ ታረቀኝ መተኪያ', 'Obbo Amaree Tarraqany Meetekiyaa',
+ '9th Floor Office 02', '9ኛ ፎቅ ግቢ 02', 'Barcuma 9ffaa Keessaa 02',
+ NULL);
+ -- Insert sample divisions
 INSERT INTO divisions (
   name_en, name_am, name_af,
-  appointed_person_en, appointed_person_am, appointed_person_af,office_number,profile_picture
-,  sector_id
+  appointed_person_en, appointed_person_am, appointed_person_af,
+  office_location_en, office_location_am, office_location_af,
+ profile_picture, sector_id
 ) VALUES
-('Director of Audit Directorate III', 'የኦዲት ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara Daayrektoreetii Oditii III', 'Serke Werede Berhanu', 'ሠርኬ ወረደ ብርሀኑ', 'Obbo Sarkee Waradaa Barhaanuu','10th floor 04','', 1),
+('Director of Audit Directorate III', 'የኦዲት ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara Daayrektoreetii Oditii III', 
+ 'Serke Werede Berhanu', 'ሠርኬ ወረደ ብርሀኑ', 'Obbo Sarkee Waradaa Barhaanuu',
+ '10th Floor Office 04', '10ኛ ፎቅ ግቢ 04', 'Barcuma 10ffaa Keessaa 04',
+ NULL, 1),
 
-('Director, Human Resources Management Directorate III', 'የሰው ሃብት አስተዳደር ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara, Daayrektoreetii Bulchiinsa Qabeenya Namaa III', 'Girma Edosa Gemechu', 'ግርማ ኢዶሳ ገመቹ', 'Obbo Girmaa Eedoosaa Gameechuu','10th floor 06','', 2),
+('Director, Human Resources Management Directorate III', 'የሰው ሃብት አስተዳደር ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara, Daayrektoreetii Bulchiinsa Qabeenya Namaa III', 
+ 'Girma Edosa Gemechu', 'ግርማ ኢዶሳ ገመቹ', 'Obbo Girmaa Eedoosaa Gameechuu',
+ '10th Floor Office 06', '10ኛ ፎቅ ግቢ 06', 'Barcuma 10ffaa Keessaa 06',
+ NULL, 2),
 
-('Director of Finance Directorate III', 'የፋይናንስ ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara Daayrektoreetii Faayinaansii III', 'Lemma Bikila Hunde', 'ለማ ቢቂላ ሁንዴ', 'Obbo Lammaa Biqilaa Hundee','10th floor 02','', 2),
+('Director of Finance Directorate III', 'የፋይናንስ ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektara Daayrektoreetii Faayinaansii III', 
+ 'Lemma Bikila Hunde', 'ለማ ቢቂላ ሁንዴ', 'Obbo Lammaa Biqilaa Hundee',
+ '10th Floor Office 02', '10ኛ ፎቅ ግቢ 02', 'Barcuma 10ffaa Keessaa 02',
+ NULL, 2),
 
-('Director of Procurement Directorate III', 'የግዥ ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektoreetii Bittaa III', 'Sintayehu Merga Debele', 'ስንታየሁ መርጋ ደበሌ', 'Obbo Sintaayyahuu Margaa Dabalee','10th floor 01','', 2),
+('Director of Procurement Directorate III', 'የግዥ ዳይሬክቶሬት ዳይሬክተር III', 'Daayrektoreetii Bittaa III', 
+ 'Sintayehu Merga Debele', 'ስንታየሁ መርጋ ደበሌ', 'Obbo Sintaayyahuu Margaa Dabalee',
+ '10th Floor Office 01', '10ኛ ፎቅ ግቢ 01', 'Barcuma 10ffaa Keessaa 01',
+ NULL, 2),
 
-('Director', 'የፓርኪንግ፣ የመንገድ ትራፊክ መሰረተ ልማትና አስተዳደር ዳይሬክተር', "Daayrektara Paarkingii, Bu'uraalee Misoomaa fi Bulchiinsa Tiraafika Daandii", 'Ato Biniam Getachew Beshe', 'አቶ ቢኒያም ጌታቸው በሼ', 'Obbo Biniyaam Gataachaw Bashaa','11th floor 01','', 3),
+('Director', 'የፓርኪንግ፣ የመንገድ ትራፊክ መሰረተ ልማትና አስተዳደር ዳይሬክተር', "Daayrektara Paarkingii, Bu'uraalee Misoomaa fi Bulchiinsa Tiraafika Daandii", 
+ 'Ato Biniam Getachew Beshe', 'አቶ ቢኒያም ጌታቸው በሼ', 'Obbo Biniyaam Gataachaw Bashaa',
+ '11th Floor Office 01', '11ኛ ፎቅ ግቢ 01', 'Barcuma 11ffaa Keessaa 01',
+ NULL, 3),
 
-('Director', 'የመንገድ ደህንነት ምህንድስና ዳይሬክተር', 'Daayrektara Injinariingii Nageenya Daandii', 'Merga Sefera Akesa E/R', 'መርጋ ሰፈራ አከሳ ኢ/ር', 'Injinar Margaa Safaraa Aqqasaa','11th floor 06','' ,3),
+('Director', 'የመንገድ ደህንነት ምህንድስና ዳይሬክተር', 'Daayrektara Injinariingii Nageenya Daandii', 
+ 'Merga Sefera Akesa E/R', 'መርጋ ሰፈራ አከሳ ኢ/ር', 'Injinar Margaa Safaraa Aqqasaa',
+ '11th Floor Office 06', '11ኛ ፎቅ ግቢ 06', 'Barcuma 11ffaa Keessaa 06',
+ NULL, 3),
 
-('Director, Road Traffic Enforcement & Control', 'ዳይሬክተር', "Daayrektara, Raawwachiisaa fi To'annoo Tiraafika Daandii", 'Ato Ayalew Atissa Guffansa', 'አያሌው አቲሳ ጉፋንሳ', 'Obbo Ayyaalaw Atiisaa Gufansaa','9th floor 04','', 4),
+('Director, Road Traffic Enforcement & Control', 'ዳይሬክተር', "Daayrektara, Raawwachiisaa fi To'annoo Tiraafika Daandii", 
+ 'Ato Ayalew Atissa Guffansa', 'አያሌው አቲሳ ጉፋንሳ', 'Obbo Ayyaalaw Atiisaa Gufansaa',
+ '9th Floor Office 04', '9ኛ ፎቅ ግቢ 04', 'Barcuma 9ffaa Keessaa 04',
+ NULL, 4),
 
-('Director, Road Safety Awareness & Capacity Building', 'ዳይሬክተር', "Daayrektara, Beeksisawwanii fi Ijaarsa Dandeettii Nageenya Daandii", 'Ato Berhanu Kuma Kefeni', 'አቶ ብርሃኑ ኩማ ከፈኒ', 'Obbo Barhaanuu Kumaa Kafanii','9th floor 01','', 4);
-
--- Insert sample departments
+('Director, Road Safety Awareness & Capacity Building', 'ዳይሬክተር', "Daayrektara, Beeksisawwanii fi Ijaarsa Dandeettii Nageenya Daandii", 
+ 'Ato Berhanu Kuma Kefeni', 'አቶ ብርሃኑ ኩማ ከፈኒ', 'Obbo Barhaanuu Kumaa Kafanii',
+ '9th Floor Office 01', '9ኛ ፎቅ ግቢ 01', 'Barcuma 9ffaa Keessaa 01',
+ NULL, 4);
+ -- Insert sample departments
 INSERT INTO departments (
   name_en, name_am, name_af,
   appointed_person_en, appointed_person_am, appointed_person_af,
-  office_number, profile_picture,
+  office_location_en, office_location_am, office_location_af,
+ profile_picture,
   sector_id, division_id
 ) VALUES
 ('Audit Expert II', 'የኦዲት ባለሙያ II', 'Ogessa Oditii II',
  'Mekdes Getahun Gebrekidan', 'መቅደስ ጌታሁን ገብረኪዳን', 'Ad/ti Maqdas Gataahun Gabrakidaan',
- '10th floor 04', '', 1, 1),
+ '10th Floor Office 04', '10ኛ ፎቅ ግቢ 04', 'Barcuma 10ffaa Keessaa 04',
+ NULL, 1, 1),
 
 ('Legal Expert III', 'የህግ ባለሙያ III', 'Ogessa Seeraa III',
  'Yedelfre Tesfaye Deco', 'የድልፍሬ ተስፋዬ ዴኮ', 'Obbo Yadalfaree Tasfaayee Deeqoo',
- '12th floor 06', '', 1, 1),
+ '12th Floor Office 06', '12ኛ ፎቅ ግቢ 06', 'Barcuma 12ffaa Keessaa 06',
+ NULL, 1, 1),
 
 ('Human Resources Management Expert IV', 'የሰው ሀብት አስተዳደር ባለሙያ IV', 'Ogessa Bulchiinsa Qabeenya Namaa IV',
  'Yetnayit Girma Admasu', 'የትናየት ግርማ አድማሱ', 'Obbo Yatnaayit Girmaa Admaasuu',
- '10th floor 06', '', 2, 2),
+ '10th Floor Office 06', '10ኛ ፎቅ ግቢ 06', 'Barcuma 10ffaa Keessaa 06',
+ NULL, 2, 2),
 
 ('Human Resources Management Expert IV', 'የሰው ሀብት አስተዳደር ባለሙያ IV', 'Ogessa Bulchiinsa Qabeenya Namaa IV',
  'Teferi Duguma Merara', 'ተፈሪ ዱጉማ መራራ', 'Obbo Tafarii Duguumaa Maraaraa',
- '10th floor 06', '', 2, 2),
+ '10th Floor Office 06', '10ኛ ፎቅ ግቢ 06', 'Barcuma 10ffaa Keessaa 06',
+  NULL, 2, 2),
 
 ('Property and General Services Team Leader III', 'የንብረትና ጠቅላላ አገልግሎት ቡድን መሪ III', 'Geggeessaa Garee Qabeenyaa fi Tajaajila Waliigalaa III',
  'Mehari Lelore Tbamo', 'መሓሪ ለዕሎሬ ጥባሞ', "Obbo Mahaarii La'looree Xibaamoo",
- '10th floor 05', '', 2, 2),
+ '10th Floor Office 05', '10ኛ ፎቅ ግቢ 05', 'Barcuma 10ffaa Keessaa 05',
+ NULL, 2, 2),
 
 ('Team Leader for parking', 'የፓርኪንግ ጥናት ቡድን መሪ', 'Hogganaa Garee Qorannoo Paarkingii',
  'Ato Solomon Kebede Balcha', 'አቶ ሰለሞን ከበደ ባልቻ', 'Obbo Solomoon Kabadaa Baalchaa',
- '11th floor 01', '', 3, 5),
+ '11th Floor Office 01', '11ኛ ፎቅ ግቢ 01', 'Barcuma 11ffaa Keessaa 01',
+ NULL, 3, 5),
 
 ('Expert at parking studies', 'የፓርኪንግ ጥናት ባለሙያ IV', 'Ogessa Qorannoo Paarkingii IV',
  'Qannew Asfaw Hailemariam', 'ቃኘው አስፋው ኃይለማሪያም', 'Obbo Qannyaw Asfaaw Haylamaariyaam',
- '11th floor 01', '', 3, 6),
+ '11th Floor Office 01', '11ኛ ፎቅ ግቢ 01', 'Barcuma 11ffaa Keessaa 01',
+ NULL, 3, 6),
 
 ('Team Leader for parking', 'የፓርኪንግ አስተዳደር ቡድን መሪ', 'Hogganaa Garee Bulchiinsa Paarkingii',
  'Embeth Tsegaye Gebre Michael', 'እመቤት ፀጋዬ ገ/ሚካኤል', "Ad/ti Imbat Tsaggayee Gabra Mikaa'el",
- '11th floor 01', '', 3, 7),
+ '11th Floor Office 01', '11ኛ ፎቅ ግቢ 01', 'Barcuma 11ffaa Keessaa 01',
+ NULL, 3, 7),
 
 ('Head of Road Traffic Enforcement & Control Team', 'ቡድን መሪ', "Hogganaa Garee Raawwachiisaa fi To'annoo Tiraafika Daandii",
  'Ato Dereje Werku Mersha', 'ደረጀ ወርቁ መርሻ', 'Obbo Darajjee Warquu Marsha',
- '9th floor 04', '', 4, 8),
+ '9th Floor Office 04', '9ኛ ፎቅ ግቢ 04', 'Barcuma 9ffaa Keessaa 04',
+ NULL, 4, 8),
 
 ('Electronic Media Awareness Specialist III', 'የኤሌክትሮኒክስ ሚዲያ ግንዛቤ ባለሙያ III', "Ogummaa III Beeksisawwan Miidiyaa Elektrooniksii",
  'Meseret Getu Woldetensay', 'መሰረት ጌቱ ወልደተንሳይ', 'Addee Masarat Geetuu Waldatansaay',
- '9th floor 01', '', 4, 8);
--- Insert into subcities
+ '9th Floor Office 01', '9ኛ ፎቅ ግቢ 01', 'Barcuma 9ffaa Keessaa 01',
+ NULL, 4, 8);
+ -- Insert into subcities
 INSERT INTO subcities (
     name_en, 
     name_am, 

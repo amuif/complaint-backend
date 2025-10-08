@@ -10,8 +10,11 @@ const createDivision = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       sector_id,
+      subcity_id,
     } = req.body;
     if (
       !name_am ||
@@ -20,7 +23,9 @@ const createDivision = async (req, res) => {
       !appointed_person_af ||
       !appointed_person_en ||
       !appointed_person_am ||
-      !office_number
+      !office_location_en ||
+      !office_location_am ||
+      !office_location_af
     ) {
       return res.status(400).json({ message: 'Enter director name in the three languages' });
     }
@@ -32,11 +37,14 @@ const createDivision = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       profile_picture: uploadedProfilePicture,
       created_at: new Date(),
       updated_at: new Date(),
       sector_id,
+      subcity_id,
     };
     await Division.create(divisionData);
     await ActivityLogService.logCreate(
@@ -82,8 +90,11 @@ const updateDivision = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       sector_id,
+      subcity_id,
     } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Enter director name in the three languages' });
@@ -98,11 +109,14 @@ const updateDivision = async (req, res) => {
       name_en,
       name_af,
       profile_picture: uploadedProfilePicture,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       appointed_person_af,
       appointed_person_en,
       appointed_person_am,
       sector_id,
+      subcity_id,
     });
     await ActivityLogService.logUpdate('Organization', division.id, req.user?.id, update.sector_id);
     res.status(200).json({ message: 'Director have been updated successfully' });
