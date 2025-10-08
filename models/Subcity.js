@@ -39,6 +39,9 @@ const Subcity = sequelize.define(
       allowNull: false,
       comment: 'subcity leader name in Oromo',
     },
+    office_location_en: { type: DataTypes.STRING(50), allowNull: false },
+    office_location_am: { type: DataTypes.STRING(50), allowNull: false },
+    office_location_af: { type: DataTypes.STRING(50), allowNull: false },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

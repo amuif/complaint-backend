@@ -28,6 +28,9 @@ CREATE TABLE IF NOT EXISTS subcities (
     appointed_person_en VARCHAR(100) NOT NULL COMMENT 'Sector leader name in English',
     appointed_person_am VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Amharic',
     appointed_person_af VARCHAR(100) NOT NULL COMMENT 'Sector leader name in Oromo',
+    office_location_en VARCHAR(50) NULL COMMENT 'Sector leader office english',
+    office_location_am VARCHAR(50) NULL COMMENT 'Sector leader office amharic',
+    office_location_af VARCHAR(50) NULL COMMENT 'Sector leader office oromic',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB 
@@ -885,21 +888,22 @@ INSERT INTO subcities (
     name_af, 
     appointed_person_en, 
     appointed_person_am, 
-    appointed_person_af
+    appointed_person_af,
+    office_location_en,
+    office_location_am,
+    office_location_af
 ) VALUES
-    ('Addis Ketema', 'አዲስ ከተማ', 'Adaama Ketema', 'Abebe Tesfaye', 'አበበ ተስፋዬ', 'Abebe Tesfaye'),
-    ('Akaki Kaliti', 'አቃቂ ቃሊቲ', 'Aqaqii Qaalitii', 'Mulugeta Kebede', 'ሙሉጌታ ከበደ', 'Mulugeta Kebede'),
-    ('Arada', 'አራዳ', 'Aradaa', 'Selamawit Asfaw', 'ሰላማዊት አስፋው', 'Salaamawit Asfaw'),
-    ('Bole', 'ቦሌ', 'Bolee', 'Tsegaye Lemma', 'ፀጋዬ ለማ', 'Segaaye Lemma'),
-    ('Kirkos', 'ቂርቆስ', 'Qirkos', 'Hiwot Alemayehu', 'ህይወት አለማየሁ', 'Hiwot Alemayehu'),
-    ('Lideta', 'ልደታ', 'Lidetaa', 'Getachew Yilma', 'ጌታቸው ይልማ', 'Getachew Yilma'),
-    ('Nifas Silk Lafto', 'ንፋስ ስልክ ላፍቶ', 'Nifaas Silkii Laftoo', 'Aster Bekele', 'አስቴር በቀለ', 'Aster Bekele'),
-    ('Yeka', 'የካ', 'Yekaa', 'Belaynesh Tadesse', 'በላይነሽ ታደሰ', 'Belaynesh Tadesse'),
-    ('Lemi Kura', 'ለሚ ኩራ', 'Lemi Kuraa', 'Dawit Gebre', 'ዳዊት ገብሬ', 'Dawit Gebre'),
-    ('Gulele', 'ጉለሌ', 'Gulele', 'Eyerusalem Teshome', 'ኤየሩሳሌም ተሾመ', 'Eyerusalem Teshome'),
-    ('Kolfe Keranio', 'ኮልፌ ቀራንዮ', 'Koolfee Qeraaniyoo', 'Fikru Desta', 'ፍቅሩ ደስታ', 'Fikru Desta');
-
-
+    ('Addis Ketema', 'አዲስ ከተማ', 'Adaama Ketema', 'Abebe Tesfaye', 'አበበ ተስፋዬ', 'Abebe Tesfaye', 'Addis Ketema Office', 'አዲስ ከተማ ቢሮ', 'Adaama Ketema Offisii'),
+    ('Akaki Kaliti', 'አቃቂ ቃሊቲ', 'Aqaqii Qaalitii', 'Mulugeta Kebede', 'ሙሉጌታ ከበደ', 'Mulugeta Kebede', 'Akaki Kaliti Office', 'አቃቂ ቃሊቲ ቢሮ', 'Aqaqii Qaalitii Offisii'),
+    ('Arada', 'አራዳ', 'Aradaa', 'Selamawit Asfaw', 'ሰላሳማዊት አስፋው', 'Salaamawit Asfaw', 'Arada Office', 'አራዳ ቢሮ', 'Aradaa Offisii'),
+    ('Bole', 'ቦሌ', 'Bolee', 'Tsegaye Lemma', 'ፀጋዬ ለማ', 'Segaaye Lemma', 'Bole Office', 'ቦሌ ቢሮ', 'Bolee Offisii'),
+    ('Kirkos', 'ቂርቆስ', 'Qirkos', 'Hiwot Alemayehu', 'ህይወት አለማየሁ', 'Hiwot Alemayehu', 'Kirkos Office', 'ቂርቆስ ቢሮ', 'Qirkos Offisii'),
+    ('Lideta', 'ልደታ', 'Lidetaa', 'Getachew Yilma', 'ጌታቸው ይልማ', 'Getachew Yilma', 'Lideta Office', 'ልደታ ቢሮ', 'Lidetaa Offisii'),
+    ('Nifas Silk Lafto', 'ንፋስ ስልክ ላፍቶ', 'Nifaas Silkii Laftoo', 'Aster Bekele', 'አስቴር በቀለ', 'Aster Bekele', 'Nifas Silk Office', 'ንፋስ ስልክ ቢሮ', 'Nifaas Silkii Offisii'),
+    ('Yeka', 'የካ', 'Yekaa', 'Belaynesh Tadesse', 'በላይነሽ ታደሰ', 'Belaynesh Tadesse', 'Yeka Office', 'የካ ቢሮ', 'Yekaa Offisii'),
+    ('Lemi Kura', 'ለሚ ኩራ', 'Lemi Kuraa', 'Dawit Gebre', 'ዳዊት ገብሬ', 'Dawit Gebre', 'Lemi Kura Office', 'ለሚ ኩራ ቢሮ', 'Lemi Kuraa Offisii'),
+    ('Gulele', 'ጉለሌ', 'Gulele', 'Eyerusalem Teshome', 'ኤየሩሳሌም ተሾመ', 'Eyerusalem Teshome', 'Gulele Office', 'ጉለሌ ቢሮ', 'Gulele Offisii'),
+    ('Kolfe Keranio', 'ኮልፌ ቀራንዮ', 'Koolfee Qeraaniyoo', 'Fikru Desta', 'ፍቅሩ ደስታ', 'Fikru Desta', 'Kolfe Keranio Office', 'ኮልፌ ቀራንዮ ቢሮ', 'Koolfee Qeraaniyoo Offisii');
 -- Insert sample teams 
 INSERT INTO teams (
   name_en, name_am, name_af,
