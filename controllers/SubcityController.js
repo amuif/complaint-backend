@@ -9,6 +9,9 @@ const createSubcity = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
+      office_location_en,
+      office_location_am,
+      office_location_af,
     } = req.body;
     if (
       !name_am ||
@@ -16,7 +19,10 @@ const createSubcity = async (req, res) => {
       !name_af ||
       !appointed_person_af ||
       !appointed_person_en ||
-      !appointed_person_am
+      !appointed_person_am ||
+      !office_location_en ||
+      !office_location_am ||
+      !office_location_af
     ) {
       return res.status(400).json({ message: 'Enter sector name in the three languages' });
     }
@@ -28,6 +34,9 @@ const createSubcity = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       created_at: new Date(),
     };
     const newSubcity = await Subcity.create(subcityData);
@@ -70,6 +79,9 @@ const updateSubcity = async (req, res) => {
       appointed_person_am,
       appointed_person_en,
       appointed_person_af,
+      office_location_en,
+      office_location_am,
+      office_location_af,
     } = req.body;
     console.log(req.body);
     if (!id) {
@@ -89,6 +101,9 @@ const updateSubcity = async (req, res) => {
         appointed_person_af,
         appointed_person_en,
         appointed_person_am,
+        office_location_en,
+        office_location_am,
+        office_location_af,
       },
       { where: { id } }
     );

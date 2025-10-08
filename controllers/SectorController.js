@@ -9,7 +9,9 @@ const createSector = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
     } = req.body;
     if (
       !name_am ||
@@ -17,7 +19,10 @@ const createSector = async (req, res) => {
       !name_af ||
       !appointed_person_af ||
       !appointed_person_en ||
-      !appointed_person_am 
+      !appointed_person_am ||
+      !office_location_en ||
+      !office_location_am ||
+      !office_location_af
     ) {
       return res.status(400).json({ message: 'Enter sector name in the three languages' });
     }
@@ -30,7 +35,9 @@ const createSector = async (req, res) => {
       appointed_person_en,
       appointed_person_af,
       appointed_person_am,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
       profile_picture: uploadedProfilePicture,
       created_at: new Date(),
     };
@@ -73,7 +80,9 @@ const updateSector = async (req, res) => {
       appointed_person_am,
       appointed_person_en,
       appointed_person_af,
-      office_number,
+      office_location_en,
+      office_location_am,
+      office_location_af,
     } = req.body;
     if (!id) {
       console.log('id is not found');
@@ -92,10 +101,12 @@ const updateSector = async (req, res) => {
         name_en,
         name_af,
         profile_picture: uploadedProfilePicture,
-        office_number,
         appointed_person_af,
         appointed_person_en,
         appointed_person_am,
+        office_location_en,
+        office_location_am,
+        office_location_af,
       },
       { where: { id } }
     );
