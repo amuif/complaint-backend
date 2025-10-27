@@ -1751,18 +1751,14 @@ const publicController = {
           {
             model: Department,
             as: 'department',
-            include: [
-              {
-                model: Division,
-                as: 'division',
-                include: [
-                  {
-                    model: Sector,
-                    as: 'sector',
-                  },
-                ],
-              },
-            ],
+          },
+          {
+            model: Division,
+            as: 'division',
+          },
+          {
+            model: Sector,
+            as: 'sector',
           },
         ],
         order: [['first_name_en', 'ASC']],
