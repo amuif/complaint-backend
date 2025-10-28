@@ -203,18 +203,34 @@ const publicController = {
   },
 
   getEmployeesBySubcity: async (req, res) => {
-    const { subcityId, divisionId, departmentId } = req.params;
+    const { subcityId } = req.params;
+    const whereClause = {};
+    if (subcityId) {
+      whereClause.subcity_id = subcityId;
+    }
     try {
-      const departments = await Employee.findAll({
-        where: { subcity_id: subcityId, division_id: divisionId, department_id: departmentId },
+      const employees = await Employee.findAll({
+        where: whereClause,
         include: [
           {
             model: Subcity,
             as: 'subcity',
           },
+          {
+            model: Division,
+            as: 'division',
+          },
+          {
+            model: Department,
+            as: 'department',
+          },
+          {
+            model: Team,
+            as: 'team',
+          },
         ],
       });
-      res.json(departments);
+      res.json(employees);
     } catch (error) {
       console.error('Fetching Subcity deparmtent by admin division:', error);
       res.status(500).json({
@@ -695,6 +711,7 @@ const publicController = {
     }
   },
 
+  //get employees by subcity
   // Get employees by team ID
   getEmployeesByTeam: async (req, res) => {
     try {

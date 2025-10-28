@@ -54,7 +54,7 @@ router.get(
   publicController.getDepartmentsBySubcityDivisions
 );
 router.get(
-  '/subcities/:subcityId/division/:divisionId/department/:departmentId',
+  '/subcities/:subcityId/employees',
   publicController.getEmployeesBySubcity
 );
 // Get offices by department
