@@ -205,14 +205,18 @@ const publicController = {
   getEmployeesBySubcity: async (req, res) => {
     const { subcityId } = req.params;
     const whereClause = {};
-    if (subcityId) {
+    console.log(subcityId)
+    if (subcityId !== 'main') {
       whereClause.subcity_id = subcityId;
     }
     try {
       const employees = await Employee.findAll({
         where: whereClause,
         include: [
-          {
+           {
+            model: Sector,
+            as: 'sector',
+          },{
             model: Subcity,
             as: 'subcity',
           },
