@@ -228,10 +228,7 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-          {
-            model: Team,
-            as: 'team',
-          },
+          
         ],
       });
       res.json(employees);
