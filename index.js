@@ -148,7 +148,7 @@ async function startServer() {
     await initDb();
 
     app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
+        console.log(`Server running on http://localhost:${PORT} with ${NODE_ENV} environment`);
     });
   } catch (error) {
     if (NODE_ENV === 'development') {
