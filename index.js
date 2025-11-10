@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');  
 require('dotenv').config();
 
 // Import database service
@@ -55,8 +56,16 @@ if (NODE_ENV === 'development') {
 
 const UPLOADS_PATH = path.join(__dirname, 'Uploads');
 const VOICE_COMPLAINTS_PATH = path.join(UPLOADS_PATH, 'voice_complaints');
-// Ensure folders exist
-fs.mkdirSync(VOICE_COMPLAINTS_PATH, { recursive: true });
+try {
+  fs.mkdirSync(VOICE_COMPLAINTS_PATH, { recursive: true });
+  console.log(`Upload dir ensured: ${VOICE_COMPLAINTS_PATH}`);
+} catch (err) {
+  if (err.code === 'EEXIST') {
+    console.log(`Upload dir already exists: ${VOICE_COMPLAINTS_PATH}`);
+  } else {
+    console.error(`Warning: Could not ensure upload dir (${err.message}). Continuing startup...`);
+  }
+}
 // Static files
 app.use(
   '/Uploads',
