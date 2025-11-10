@@ -735,12 +735,12 @@ COMMENT='System configuration settings';
 -- =====================================
 
 -- Additional performance indexes
-CREATE INDEX IF NOT EXISTS idx_complaints_status_date ON complaints(status, created_at);
-CREATE INDEX IF NOT EXISTS idx_public_complaints_status_date ON public_complaints(status, created_at);
-CREATE INDEX IF NOT EXISTS idx_feedback_type_date ON feedbacks(feedback_type, created_at);
-CREATE INDEX IF NOT EXISTS idx_public_feedback_type_date ON public_feedback(feedback_type, created_at);
-CREATE INDEX IF NOT EXISTS idx_ratings_employee_date ON ratings(employee_id, created_at);
-CREATE INDEX IF NOT EXISTS idx_public_ratings_dept_date ON public_ratings(department_id, created_at);
+CREATE INDEX idx_complaints_status_date ON complaints(status, created_at);
+CREATE INDEX idx_public_complaints_status_date ON public_complaints(status, created_at);
+CREATE INDEX idx_feedback_type_date ON feedbacks(feedback_type, created_at);
+CREATE INDEX idx_public_feedback_type_date ON public_feedback(feedback_type, created_at);
+CREATE INDEX idx_ratings_employee_date ON ratings(employee_id, created_at);
+CREATE INDEX idx_public_ratings_dept_date ON public_ratings(department_id, created_at);
 
 -- Full-text search indexes
 CREATE FULLTEXT INDEX IF NOT EXISTS ft_complaint_description ON complaints(description_en, description_am, description_af);

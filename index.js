@@ -53,19 +53,24 @@ if (NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+const UPLOADS_PATH = path.join(__dirname, 'Uploads');
+const VOICE_COMPLAINTS_PATH = path.join(UPLOADS_PATH, 'voice_complaints');
+// Ensure folders exist
+fs.mkdirSync(VOICE_COMPLAINTS_PATH, { recursive: true });
 // Static files
 app.use(
   '/Uploads',
-  express.static(path.join(__dirname, 'Uploads'), {
-    setHeaders: (res, path) => {
+  express.static(UPLOADS_PATH, {
+    setHeaders: (res, filePath) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Accept-Ranges', 'bytes');
-      res.setHeader('Content-Type', 'audio/webm'); // Set proper MIME type
+      if (filePath.endsWith('.webm')) {
+        res.setHeader('Content-Type', 'audio/webm');
+      }
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     },
   })
-);
-// Routes
+);// Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api', publicRoutes);
 
@@ -134,9 +139,7 @@ async function startServer() {
     await initDb();
 
     app.listen(PORT, () => {
-      if (NODE_ENV === 'development') {
         console.log(`Server running on http://localhost:${PORT}`);
-      }
     });
   } catch (error) {
     if (NODE_ENV === 'development') {
