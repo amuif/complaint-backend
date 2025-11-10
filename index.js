@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
-const fs = require('fs');  
+const fs = require('fs');
 require('dotenv').config();
 
 // Import database service
@@ -79,7 +79,7 @@ app.use(
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     },
   })
-);// Routes
+); // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api', publicRoutes);
 
@@ -148,8 +148,9 @@ async function startServer() {
     await initDb();
 
     app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT} with ${NODE_ENV} environment`);
+      console.log(`Server running on http://localhost:${PORT} with ${NODE_ENV} environment`);
     });
+    console.log('environment is', process.env.NODE_ENV);
   } catch (error) {
     if (NODE_ENV === 'development') {
       console.error('Failed to start server:', error);
