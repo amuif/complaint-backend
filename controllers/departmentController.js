@@ -30,6 +30,7 @@ const createDepartment = async (req, res) => {
     ) {
       return res.status(400).json({ message: 'Enter team name in the three languages' });
     }
+    console.log('fadfadf')
 
     const uploadedProfilePicture = req.files?.profile_picture?.[0]?.filename;
     const departmentData = {
@@ -42,11 +43,12 @@ const createDepartment = async (req, res) => {
       office_location_en,
       office_location_af,
       office_location_am,
-      subcity_id,
+      subcity_id: parseInt(subcity_id),
       profile_picture: uploadedProfilePicture,
       sector_id,
       division_id,
     };
+    console.log(departmentData)
     await Department.create(departmentData);
     await ActivityLogService.logCreate(
       'Organization',
@@ -94,6 +96,7 @@ const updateDepartment = async (req, res) => {
       office_number,
       sector_id,
       division_id,
+      subcity_id,
     } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Enter team name in the three languages' });
@@ -113,6 +116,7 @@ const updateDepartment = async (req, res) => {
       appointed_person_am,
       sector_id,
       division_id,
+      subcity_id,
     });
     await ActivityLogService.logUpdate('Organization', updated.id, req.user?.id, updated.sector_id);
     res.status(200).json({ message: 'successfully updated team' });

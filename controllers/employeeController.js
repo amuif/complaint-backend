@@ -410,7 +410,7 @@ const updateEmployee = async (req, res) => {
         division_id: updatedEmployee.division_id,
         department_id: updatedEmployee.department_id,
         team_id: updatedEmployee.team_id,
-        subcity_id:updatedEmployee.subcity_id
+        subcity_id: updatedEmployee.subcity_id,
       },
     });
   } catch (error) {

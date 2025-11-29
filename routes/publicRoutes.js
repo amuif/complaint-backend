@@ -53,13 +53,10 @@ router.get(
   '/subcities/:subcityId/division/:divisionId',
   publicController.getDepartmentsBySubcityDivisions
 );
-router.get(
-  '/subcities/:subcityId/employees',
-  publicController.getEmployeesBySubcity
-);
+router.get('/subcities/:subcityId/employees', publicController.getEmployeesBySubcity);
 
-// Get main office employees 
-router.get('/main/employees',publicController.getMainOfficeEmployees)
+// Get main office employees
+router.get('/main/employees', publicController.getMainOfficeEmployees);
 
 // Get offices by department
 router.get('/departments/:departmentId/offices', publicController.getOfficesByDepartment);

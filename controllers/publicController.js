@@ -204,7 +204,7 @@ const publicController = {
   getEmployeesBySubcity: async (req, res) => {
     const { subcityId } = req.params;
     const whereClause = {};
-    console.log(subcityId)
+    console.log(subcityId);
     if (subcityId !== 'main') {
       whereClause.subcity_id = subcityId;
     }
@@ -215,7 +215,8 @@ const publicController = {
           {
             model: Sector,
             as: 'sector',
-          }, {
+          },
+          {
             model: Subcity,
             as: 'subcity',
           },
@@ -227,7 +228,6 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-
         ],
       });
       res.json(employees);
@@ -247,7 +247,8 @@ const publicController = {
           {
             model: Sector,
             as: 'sector',
-          }, {
+          },
+          {
             model: Subcity,
             as: 'subcity',
           },
@@ -259,7 +260,6 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-
         ],
       });
       res.json(employees);
@@ -269,8 +269,6 @@ const publicController = {
         message: 'Failed to fetch employees through subcity division',
       });
     }
-
-
   },
   // =================================
   // DEPARTMENTS & OFFICES
@@ -1544,7 +1542,7 @@ const publicController = {
             model: Subcity,
             as: 'subcity',
           },
-        ]
+        ],
       });
 
       res.json({

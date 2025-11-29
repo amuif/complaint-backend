@@ -1,13 +1,13 @@
-const multer = require("multer");
-const path = require("path");
-const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
+const multer = require('multer');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 // Create upload directories if they don't exist
 const uploadDirs = {
-  voice_complaints: "./Uploads/voice_complaints",
-  profile_pictures: "./Uploads/profile_pictures",
-  attachments: "./Uploads/attachments",
+  voice_complaints: './Uploads/voice_complaints',
+  profile_pictures: './Uploads/profile_pictures',
+  attachments: './Uploads/attachments',
 };
 
 Object.values(uploadDirs).forEach((dir) => {
@@ -17,10 +17,10 @@ Object.values(uploadDirs).forEach((dir) => {
 // Storage config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (file.fieldname === "voice_file") cb(null, uploadDirs.voice_complaints);
-    else if (file.fieldname === "profile_picture") cb(null, uploadDirs.profile_pictures);
-    else if (file.fieldname === "attachment") cb(null, uploadDirs.attachments);
-    else cb(null, "./Uploads"); // fallback
+    if (file.fieldname === 'voice_file') cb(null, uploadDirs.voice_complaints);
+    else if (file.fieldname === 'profile_picture') cb(null, uploadDirs.profile_pictures);
+    else if (file.fieldname === 'attachment') cb(null, uploadDirs.attachments);
+    else cb(null, './Uploads'); // fallback
   },
   filename: (req, file, cb) => {
     cb(null, `${uuidv4()}${path.extname(file.originalname)}`);
@@ -39,15 +39,15 @@ const upload = multer({
     const ext = path.extname(file.originalname).slice(1).toLowerCase(); // remove dot
 
     switch (file.fieldname) {
-      case "voice_file":
+      case 'voice_file':
         if (voiceExts.test(ext)) return cb(null, true);
         return cb(new Error(`Invalid voice file extension: .${ext}`));
 
-      case "attachment":
+      case 'attachment':
         if (attachmentExts.test(ext)) return cb(null, true);
         return cb(new Error(`Invalid attachment file extension: .${ext}`));
 
-      case "profile_picture":
+      case 'profile_picture':
         if (imageExts.test(ext)) return cb(null, true);
         return cb(new Error(`Invalid profile picture extension: .${ext}`));
 
@@ -58,4 +58,3 @@ const upload = multer({
 });
 
 module.exports = upload;
-
