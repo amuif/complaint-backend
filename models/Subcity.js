@@ -66,5 +66,9 @@ Subcity.associate = function (models) {
   Subcity.hasMany(models.PublicRating, { foreignKey: 'sub_city_id', as: 'public_ratings' });
   Subcity.hasMany(models.Feedback, { foreignKey: 'sub_city_id', as: 'feedbacks' });
   Subcity.hasMany(models.PublicFeedback, { foreignKey: 'sub_city_id', as: 'public_feedbacks' });
+  Subcity.hasMany(models.Sector, {
+    foreignKey: 'subcity_id',
+    as: 'sectors',
+  });
 };
 module.exports = Subcity;

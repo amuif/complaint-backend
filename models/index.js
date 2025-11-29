@@ -66,6 +66,7 @@ PasswordReset.belongsTo(Admin, { foreignKey: 'admin_id' });
 Admin.hasMany(PasswordReset, { foreignKey: 'admin_id' });
 Admin.belongsTo(Sector, { foreignKey: 'sector_id', as: 'sector' });
 Sector.hasMany(Admin, { foreignKey: 'sector_id', as: 'admins' });
+Sector.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
 
 Admin.belongsTo(Division, { foreignKey: 'division_id', as: 'division' });
 Division.hasMany(Admin, { foreignKey: 'division_id', as: 'admins' });

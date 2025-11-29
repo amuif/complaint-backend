@@ -11,10 +11,11 @@ const Sector = sequelize.define(
     appointed_person_en: { type: DataTypes.STRING(100), allowNull: false },
     appointed_person_am: { type: DataTypes.STRING(100), allowNull: false },
     appointed_person_af: { type: DataTypes.STRING(100), allowNull: false },
-    office_location_en: { type: DataTypes.STRING(50), allowNull: true},
-    office_location_am: { type: DataTypes.STRING(50), allowNull: true},
-    office_location_af: { type: DataTypes.STRING(50), allowNull: true},
+    office_location_en: { type: DataTypes.STRING(50), allowNull: true },
+    office_location_am: { type: DataTypes.STRING(50), allowNull: true },
+    office_location_af: { type: DataTypes.STRING(50), allowNull: true },
     profile_picture: { type: DataTypes.STRING(255), allowNull: true },
+    subcity_id: { type: DataTypes.INTEGER, allowNull: false }
   },
   {
     tableName: 'sectors',
@@ -84,6 +85,11 @@ Sector.associate = (models) => {
     foreignKey: 'sector_id',
     as: 'internal_ratings',
   });
+  Sector.hasMany(models.Subcity, {
+    foreignKey: 'subcity_id',
+    as: 'subcity',
+  });
+
 
   Sector.hasMany(models.PublicRating, {
     foreignKey: 'sector_id',

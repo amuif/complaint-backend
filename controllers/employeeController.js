@@ -266,7 +266,7 @@ const updateEmployee = async (req, res) => {
       department_af,
       section,
       city,
-      subcity,
+      subcity_id,
       lang = 'en',
       // Organizational hierarchy fields
       sector_id,
@@ -328,9 +328,9 @@ const updateEmployee = async (req, res) => {
       floor_number: floor_number,
       [`position_${lang}`]: position,
       [`department_${lang}`]: department,
-      section: section || subcity,
+      section: section || subcity_id,
       city,
-      subcity,
+      subcity_id,
       works_in_head_office,
       // Organizational hierarchy fields
       sector_id: sector_id ? parseInt(sector_id) : null,
@@ -379,6 +379,12 @@ const updateEmployee = async (req, res) => {
           attributes: ['id', 'name_en', 'name_am', 'name_af'],
           required: false,
         },
+        {
+          model: require('../models').Subcity,
+          as: 'subcity',
+          attributes: ['id', 'name_en', 'name_am', 'name_af'],
+          required: false,
+        },
       ],
     });
 
@@ -404,6 +410,7 @@ const updateEmployee = async (req, res) => {
         division_id: updatedEmployee.division_id,
         department_id: updatedEmployee.department_id,
         team_id: updatedEmployee.team_id,
+        subcity_id:updatedEmployee.subcity_id
       },
     });
   } catch (error) {

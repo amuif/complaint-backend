@@ -201,7 +201,6 @@ const publicController = {
       });
     }
   },
-
   getEmployeesBySubcity: async (req, res) => {
     const { subcityId } = req.params;
     const whereClause = {};
@@ -213,10 +212,10 @@ const publicController = {
       const employees = await Employee.findAll({
         where: whereClause,
         include: [
-           {
+          {
             model: Sector,
             as: 'sector',
-          },{
+          }, {
             model: Subcity,
             as: 'subcity',
           },
@@ -228,7 +227,7 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-          
+
         ],
       });
       res.json(employees);
@@ -238,6 +237,40 @@ const publicController = {
         message: 'Failed to fetch employees through subcity division',
       });
     }
+  },
+  // main office employees
+  getMainOfficeEmployees: async (req, res) => {
+    try {
+      const employees = await Employee.findAll({
+        where: { works_in_head_office: true },
+        include: [
+          {
+            model: Sector,
+            as: 'sector',
+          }, {
+            model: Subcity,
+            as: 'subcity',
+          },
+          {
+            model: Division,
+            as: 'division',
+          },
+          {
+            model: Department,
+            as: 'department',
+          },
+
+        ],
+      });
+      res.json(employees);
+    } catch (error) {
+      console.error('Fetching Subcity deparmtent by admin division:', error);
+      res.status(500).json({
+        message: 'Failed to fetch employees through subcity division',
+      });
+    }
+
+
   },
   // =================================
   // DEPARTMENTS & OFFICES
@@ -1506,6 +1539,12 @@ const publicController = {
     try {
       const sectors = await Sector.findAll({
         order: [['name_en', 'ASC']],
+        include: [
+          {
+            model: Subcity,
+            as: 'subcity',
+          },
+        ]
       });
 
       res.json({
@@ -1530,8 +1569,6 @@ const publicController = {
           {
             model: Sector,
             as: 'sector',
-
-            attributes: ['id', 'name_af', 'name_en', 'name_am'],
           },
         ],
         order: [['name_en', 'ASC']],
