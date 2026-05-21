@@ -62,20 +62,10 @@ const getEmployeesAdmin = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
 
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -104,11 +94,7 @@ const getEmployeesAdmin = async (req, res) => {
           as: 'team',
           required: false,
         },
-        {
-          model: require('../models').Subcity,
-          as: 'subcity',
-          required: false,
-        },
+
       ],
       order: [['created_at', 'DESC']],
     });
@@ -122,7 +108,7 @@ const getEmployeesAdmin = async (req, res) => {
       hierarchy: {
         sector: employee.sector || null,
         division: employee.division || null,
-        department: employee.employeeDepartment || null,
+        department: employee.department || null,
         team: employee.team || null,
       },
     }));
@@ -165,7 +151,7 @@ const createEmployee = async (req, res) => {
       works_in_head_office,
       division_id,
       department_id,
-      subcity_id,
+
       team_id,
     } = req.body;
     const admin = req.user;
@@ -205,7 +191,7 @@ const createEmployee = async (req, res) => {
       position_en: position_en || actualPosition || '',
       position_am: position_am || actualPosition || '',
       position_af: position_af || actualPosition || '',
-      subcity_id: subcity_id ? parseInt(subcity_id) : null,
+
 
       // Organizational hierarchy fields
       works_in_head_office: works_in_head_office,
@@ -225,8 +211,7 @@ const createEmployee = async (req, res) => {
       'employee',
       newEmployee.id,
       req.user?.id,
-      newEmployee.sector_id,
-      newEmployee.subcity_id
+      newEmployee.sector_id
     );
     res.status(201).json({
       message: 'Employee created successfully',
@@ -266,7 +251,6 @@ const updateEmployee = async (req, res) => {
       department_af,
       section,
       city,
-      subcity_id,
       lang = 'en',
       // Organizational hierarchy fields
       sector_id,
@@ -281,17 +265,13 @@ const updateEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Invalid language. Use en, am, or af.' });
     }
 
-    // Check if admin has permission to edit this employee
-    const employee = await Employee.findOne({ where: { id } });
+    const employee = await Employee.findByPk(id);
+
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    if (admin.role === 'SubCityAdmin') {
-      if (employee.city !== admin.city || employee.subcity !== admin.subcity) {
-        return res.status(403).json({ message: 'Cannot edit employee from another subcity' });
-      }
-    } else if (admin.role === 'CityAdmin') {
+    if (admin.role === 'CityAdmin') {
       if (employee.city !== admin.city) {
         return res.status(403).json({ message: 'Cannot edit employee from another city' });
       }
@@ -321,16 +301,13 @@ const updateEmployee = async (req, res) => {
       department_am,
       department_af,
 
-      // [`first_name_${lang}`]: first_name,
-      // [`middle_name_${lang}`]: middle_name,
-      // [`last_name_${lang}`]: last_name,
       office_number: office_number,
       floor_number: floor_number,
       [`position_${lang}`]: position,
       [`department_${lang}`]: department,
-      section: section || subcity_id,
+      section: section,
       city,
-      subcity_id,
+
       works_in_head_office,
       // Organizational hierarchy fields
       sector_id: sector_id ? parseInt(sector_id) : null,
@@ -343,14 +320,13 @@ const updateEmployee = async (req, res) => {
       updateData.profile_picture = req.files.profile_picture[0].filename;
     }
 
-    const newEmployee = await Employee.update(updateData, { where: { id } });
+    await Employee.update(updateData, { where: { id } });
 
     await ActivityLogService.logUpdate(
       'employee',
-      newEmployee.id,
+      id,
       req.user?.id,
-      newEmployee.sector_id,
-      newEmployee.subcity_id
+      sector_id ? parseInt(sector_id) : employee.sector_id
     );
 
     const updatedEmployee = await Employee.findByPk(id, {
@@ -379,12 +355,6 @@ const updateEmployee = async (req, res) => {
           attributes: ['id', 'name_en', 'name_am', 'name_af'],
           required: false,
         },
-        {
-          model: require('../models').Subcity,
-          as: 'subcity',
-          attributes: ['id', 'name_en', 'name_am', 'name_af'],
-          required: false,
-        },
       ],
     });
 
@@ -401,7 +371,7 @@ const updateEmployee = async (req, res) => {
         department: updatedEmployee[`department_${lang}`],
         section: updatedEmployee.section,
         city: updatedEmployee.city,
-        subcity: updatedEmployee.subcity,
+
         profile_picture: updatedEmployee.profile_picture
           ? `/Uploads/profile_pictures/${updatedEmployee.profile_picture}`
           : null,
@@ -410,7 +380,6 @@ const updateEmployee = async (req, res) => {
         division_id: updatedEmployee.division_id,
         department_id: updatedEmployee.department_id,
         team_id: updatedEmployee.team_id,
-        subcity_id: updatedEmployee.subcity_id,
       },
     });
   } catch (error) {
@@ -432,11 +401,7 @@ const deleteEmployee = async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    if (admin.role === 'SubCityAdmin') {
-      if (employee.city !== admin.city || employee.subcity !== admin.subcity) {
-        return res.status(403).json({ message: 'Cannot delete employee from another subcity' });
-      }
-    } else if (admin.role === 'CityAdmin') {
+    if (admin.role === 'CityAdmin') {
       if (employee.city !== admin.city) {
         return res.status(403).json({ message: 'Cannot delete employee from another city' });
       }

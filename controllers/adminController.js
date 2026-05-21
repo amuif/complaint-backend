@@ -12,7 +12,6 @@ const {
   Office,
   Sector,
   Division,
-  Subcity,
 } = require('../models');
 
 const { validateLanguage, getSentiment } = require('../utils/helpers');
@@ -67,8 +66,6 @@ const adminLogin = async (req, res) => {
         username: admin.username,
         role: admin.role,
         city: admin.city,
-        subcity: admin.subcity_id,
-        section: admin.subcity, // Keep for backward compatibility
         department: admin.department,
       },
       process.env.JWT_SECRET || 'fallback_secret_key',
@@ -105,10 +102,7 @@ const getAdmins = async (req, res) => {
           model: Division,
           as: 'division',
         },
-        {
-          model: Subcity,
-          as: 'subcity',
-        },
+
       ],
       order: [['created_at', 'DESC']],
     });
@@ -131,7 +125,6 @@ const createAdmin = async (req, res) => {
       email,
       role,
       city,
-      subcity_id,
       department_id,
       sector_id,
       phone,
@@ -153,9 +146,9 @@ const createAdmin = async (req, res) => {
       });
     }
 
-    // City and subcity check for certain roles
-    if (['Editor', 'Viewer'].includes(role) && (!city || !subcity_id)) {
-      return res.status(400).json({ message: 'City and subcity are required for this role' });
+    // Role check
+    if (['Editor', 'Viewer'].includes(role) && !city) {
+      return res.status(400).json({ message: 'City is required for this role' });
     }
 
     // Uniqueness checks
@@ -190,7 +183,6 @@ const createAdmin = async (req, res) => {
       password: hashedPassword,
       role: role,
       city: role === 'Editor' ? city : null,
-      subcity_id: role === 'Editor' || role === 'Admin' ? subcity_id : null,
       sector_id: role === 'Editor' || role === 'Admin' ? sector_id : null,
       division_id: role === 'Editor' || role === 'Admin' ? division_id : null,
       department_id: role === 'Editor' || role === 'Admin' ? department_id : null,
@@ -205,7 +197,7 @@ const createAdmin = async (req, res) => {
       newAdmin.id,
       req.user?.id,
       newAdmin.sector_id,
-      newAdmin.subcity_id
+      newAdmin.sector_id
     );
     res.status(201).json({
       message: `${role} created successfully`,
@@ -275,7 +267,7 @@ const updateSuperAdmin = async (req, res) => {
         admin_username: refreshedAdmin.username,
       },
       refreshedAdmin.sector_id,
-      refreshedAdmin.subcity_id
+      refreshedAdmin.sector_id
     );
 
     const adminInfo = addProfilePictureUrl(refreshedAdmin);
@@ -301,7 +293,6 @@ const updateAdmin = async (req, res) => {
       email,
       role,
       city,
-      subcity_id,
       department_id,
       sector_id,
       phone,
@@ -364,7 +355,7 @@ const updateAdmin = async (req, res) => {
       email: email || adminToUpdate.email,
       role: role || adminToUpdate.role,
       city: city || adminToUpdate.city,
-      subcity_id: subcity_id || adminToUpdate.subcity_id,
+
       department_id: department_id || adminToUpdate.department_id,
       sector_id: sector_id || adminToUpdate.sector_id,
       phone: phone || adminToUpdate.phone,
@@ -391,7 +382,7 @@ const updateAdmin = async (req, res) => {
         admin_username: refreshedAdmin.username,
       },
       refreshedAdmin.sector_id || null,
-      refreshedAdmin.subcity_id
+      refreshedAdmin.sector_id
     );
     console.log(refreshedAdmin);
     const adminInfo = addProfilePictureUrl(refreshedAdmin);
@@ -433,7 +424,7 @@ const deleteAdmin = async (req, res) => {
       adminToBeDeleted.id,
       req.user?.id,
       adminToBeDeleted.sector_id,
-      adminToBeDeleted.subcity_id
+      adminToBeDeleted.sector_id
     );
 
     return res.status(200).json({ message: 'Admin deleted successfully' });
@@ -595,20 +586,10 @@ const getStatistics = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -702,7 +683,7 @@ const getDepartments = async (req, res) => {
 const logAdmins = async (req, res) => {
   try {
     const admins = await Admin.findAll({
-      attributes: ['id', 'username', 'role', 'section', 'department'],
+      attributes: ['id', 'username', 'role', 'email'],
     });
 
     // Reset passwords for all admins to a known value (e.g., 'reset123') and log them
@@ -718,8 +699,7 @@ const logAdmins = async (req, res) => {
           id: admin.id,
           username: admin.username,
           role: admin.role,
-          section: admin.section,
-          department: admin.department,
+          email: admin.email,
           reset_password: resetPassword,
         };
       })
@@ -749,20 +729,10 @@ const exportReport = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
 
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -785,7 +755,6 @@ const exportReport = async (req, res) => {
           { model: Division, as: 'division', required: false },
           { model: Employee, as: 'employee', required: false },
           { model: Department, as: 'department', required: false },
-          { model: Subcity, as: 'sub_city', required: false },
         ],
         order: [['created_at', 'DESC']],
       });
@@ -813,7 +782,6 @@ const exportReport = async (req, res) => {
           { model: Sector, as: 'sector', required: false },
           { model: Division, as: 'division', required: false },
           { model: Department, as: 'department', required: false },
-          { model: Subcity, as: 'subcity', required: false },
         ],
         order: [['created_at', 'DESC']],
       });
@@ -831,7 +799,6 @@ const exportReport = async (req, res) => {
       'Status',
       'Sector',
       'Division',
-      'Subcity',
       'Created At',
     ];
 
@@ -855,7 +822,6 @@ const exportReport = async (req, res) => {
       'Floor Number',
       'Position',
       'Department',
-      'Subcity',
       'Sector',
       'Division',
       'Created At',
@@ -886,7 +852,6 @@ const exportReport = async (req, res) => {
               `${c.status || ''}`,
               `${c.sector?.name_en || ''}`,
               `${c.division?.name_en || ''}`,
-              `${c.sub_city?.name_en || ''}`,
               `${c.created_at}`,
             ].join(',') + '\n';
         });
@@ -928,7 +893,6 @@ const exportReport = async (req, res) => {
               emp.floor_number || '',
               `${emp.position_en || ''}`,
               `${emp.department?.name_en || ''}`,
-              `${emp.subcity?.name_en || ''}`,
               `${emp.sector?.name_en || ''}`,
               `${emp.division?.name_en || ''}`,
               `${emp.created_at}`,
@@ -966,7 +930,6 @@ const exportReport = async (req, res) => {
             c.status || '',
             c.sector?.name_en || '',
             c.division?.name_en || '',
-            c.sub_city?.name_en || '',
             c.created_at,
           ]);
         });
@@ -1004,7 +967,6 @@ const exportReport = async (req, res) => {
             emp.floor_number || '',
             emp.position_en || '',
             emp.department?.name_en || '',
-            emp.subcity?.name_en || '',
             emp.sector?.name_en || '',
             emp.division?.name_en || '',
             emp.created_at,
@@ -1022,287 +984,7 @@ const exportReport = async (req, res) => {
     res.status(500).json({ message: 'Error exporting report', error: error.message });
   }
 };
-const exportSubcity = async (req, res) => {
-  try {
-    const admin = req.user;
-    const { lang = 'en', type = 'all', format, subcity_id } = req.query;
-    console.log('id', subcity_id);
 
-    if (!validateLanguage(lang)) {
-      return res.status(400).json({ message: 'Invalid language. Use en, am, or af.' });
-    }
-
-    let where = { subcity_id };
-    const currentAdmin = await Admin.findByPk(admin.id);
-
-    if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
-      } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
-      }
-    } else {
-      console.warn('currentAdmin is null or role not allowed');
-    }
-
-    let reportData = {};
-
-    // Fetch Complaints
-    if (type === 'all' || type === 'complaints') {
-      const complaints = await PublicComplaint.findAll({
-        where,
-        include: [
-          { model: Sector, as: 'sector', required: false },
-          { model: Division, as: 'division', required: false },
-          { model: Employee, as: 'employee', required: false },
-          { model: Department, as: 'department', required: false },
-          { model: Subcity, as: 'sub_city', required: false },
-        ],
-        order: [['created_at', 'DESC']],
-      });
-      reportData.complaints = complaints.map((c) => c.get({ plain: true }));
-    }
-
-    // Fetch Feedback
-    if (type === 'all' || type === 'feedback') {
-      const feedback = await PublicFeedback.findAll({
-        where,
-        include: [{ model: Sector, as: 'sector', required: false }],
-        order: [['created_at', 'DESC']],
-      });
-      reportData.feedback = feedback.map((fb) => ({
-        ...fb.get({ plain: true }),
-        sentiment: getSentiment(fb.rating), // Assuming getSentiment is defined
-      }));
-    }
-
-    // Fetch Employees
-    if (type === 'all' || type === 'employees') {
-      const employees = await Employee.findAll({
-        where,
-        include: [
-          { model: Sector, as: 'sector', required: false },
-          { model: Division, as: 'division', required: false },
-          { model: Department, as: 'department', required: false },
-          { model: Subcity, as: 'subcity', required: false },
-        ],
-        order: [['created_at', 'DESC']],
-      });
-      reportData.employees = employees.map((e) => e.get({ plain: true }));
-    }
-
-    // Define headers for each data type
-    const complaintHeaders = [
-      'ID',
-      'Phone Number',
-      'Department',
-      'Employee Name',
-      'Description',
-      'Response',
-      'Status',
-      'Sector',
-      'Division',
-      'Subcity',
-      'Created At',
-    ];
-
-    const feedbackHeaders = [
-      'ID',
-      'Phone Number',
-      'Full name',
-      'Sector ',
-      'Feedback text',
-      'Feedback type',
-      'Created At',
-    ];
-
-    const employeeHeaders = [
-      'ID',
-      'Phone',
-      'First Name',
-      'Middle Name',
-      'Last Name',
-      'Office Number',
-      'Floor Number',
-      'Position',
-      'Department',
-      'Subcity',
-      'Sector',
-      'Division',
-      'Created At',
-    ];
-    const filename = `report-${Date.now()}.${format === 'excel' ? 'xlsx' : format === 'pdf' ? 'pdf' : 'csv'}`;
-    console.log('Format value:', format);
-    console.log('Filename will be:', filename);
-    // CSV Export
-    if (format === 'csv') {
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
-      let csvContent = '';
-
-      // Complaints CSV
-      if (reportData.complaints?.length) {
-        csvContent += 'Complaints\n';
-        csvContent += complaintHeaders.join(',') + '\n';
-        reportData.complaints.forEach((c) => {
-          csvContent +=
-            [
-              c.id,
-              `${c.phone_number || ''}`,
-              `${c.department?.name_en || ''}`,
-              `${c.employee ? `${c.employee.first_name_en} ${c.employee.middle_name_en || ''} ${c.employee.last_name_en}` : ''}`,
-              `${(c.complaint_description || '').replace(/"/g, '""')}`,
-              `${(c.response || '').replace(/"/g, '""')}`,
-              `${c.status || ''}`,
-              `${c.sector?.name_en || ''}`,
-              `${c.division?.name_en || ''}`,
-              `${c.sub_city?.name_en || ''}`,
-              `${c.created_at}`,
-            ].join(',') + '\n';
-        });
-        csvContent += '\n';
-      }
-
-      // Feedback CSV
-      if (reportData.feedback?.length) {
-        csvContent += 'Feedback\n';
-        csvContent += feedbackHeaders.join(',') + '\n';
-        reportData.feedback.forEach((fb) => {
-          csvContent +=
-            [
-              fb.id,
-              `${fb.phone_number || ''}`,
-              `${fb.full_name || ''}`,
-              `${(fb.sector.name_en || '').replace(/"/g, '""')}`,
-              `${fb.feedback_text || ''}`,
-              `${fb.feedback_type || ''}`,
-              `${fb.created_at}`,
-            ].join(',') + '\n';
-        });
-        csvContent += '\n';
-      }
-
-      // Employees CSV
-      if (reportData.employees?.length) {
-        csvContent += 'Employees\n';
-        csvContent += employeeHeaders.join(',') + '\n';
-        reportData.employees.forEach((emp) => {
-          csvContent +=
-            [
-              emp.id,
-              `${emp.phone || ''}`,
-              `${emp.first_name_en || ''}`,
-              `${emp.middle_name_en || ''}`,
-              `${emp.last_name_en || ''}`,
-              `${emp.office_number || ''}`,
-              emp.floor_number || '',
-              `${emp.position_en || ''}`,
-              `${emp.department?.name_en || ''}`,
-              `${emp.subcity?.name_en || ''}`,
-              `${emp.sector?.name_en || ''}`,
-              `${emp.division?.name_en || ''}`,
-              `${emp.created_at}`,
-            ].join(',') + '\n';
-        });
-      }
-
-      return res.send(csvContent);
-    }
-
-    // Excel Export
-    if (format === 'excel') {
-      res.setHeader(
-        'Content-Type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      );
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
-      const workbook = new ExcelJS.Workbook();
-
-      // Complaints Sheet
-      if (reportData.complaints?.length) {
-        const complaintSheet = workbook.addWorksheet('Complaints');
-        complaintSheet.addRow(complaintHeaders);
-        reportData.complaints.forEach((c) => {
-          complaintSheet.addRow([
-            c.id,
-            c.phone_number || '',
-            c.department?.name_en || '',
-            c.employee
-              ? `${c.employee.first_name_en} ${c.employee.middle_name_en || ''} ${c.employee.last_name_en}`
-              : '',
-            c.complaint_description || '',
-            c.response || '',
-            c.status || '',
-            c.sector?.name_en || '',
-            c.division?.name_en || '',
-            c.sub_city?.name_en || '',
-            c.created_at,
-          ]);
-        });
-      }
-
-      // Feedback Sheet
-      if (reportData.feedback?.length) {
-        const feedbackSheet = workbook.addWorksheet('Feedback');
-        feedbackSheet.addRow(feedbackHeaders);
-        reportData.feedback.forEach((fb) => {
-          feedbackSheet.addRow([
-            fb.id,
-            `${fb.phone_number || ''}`,
-            `${fb.full_name || ''}`,
-            `${(fb.sector.name_en || '').replace(/"/g, '""')}`,
-            `${fb.feedback_text || ''}`,
-            `${fb.feedback_type || ''}`,
-            `${fb.created_at}`,
-          ]);
-        });
-      }
-
-      // Employees Sheet
-      if (reportData.employees?.length) {
-        const employeeSheet = workbook.addWorksheet('Employees');
-        employeeSheet.addRow(employeeHeaders);
-        reportData.employees.forEach((emp) => {
-          employeeSheet.addRow([
-            emp.id,
-            emp.phone || '',
-            emp.first_name_en || '',
-            emp.middle_name_en || '',
-            emp.last_name_en || '',
-            emp.office_number || '',
-            emp.floor_number || '',
-            emp.position_en || '',
-            emp.department?.name_en || '',
-            emp.subcity?.name_en || '',
-            emp.sector?.name_en || '',
-            emp.division?.name_en || '',
-            emp.created_at,
-          ]);
-        });
-      }
-
-      // Write the workbook to the response
-      await workbook.xlsx.write(res);
-      return res.end();
-    } // Default JSON response
-    res.json(reportData);
-  } catch (error) {
-    console.error('Error exporting report:', error);
-    res.status(500).json({ message: 'Error exporting report', error: error.message });
-  }
-};
 
 // Get complaint trends for analytics
 const getComplaintTrends = async (req, res) => {
@@ -1321,9 +1003,7 @@ const getComplaintTrends = async (req, res) => {
       },
     };
 
-    if (admin.role === 'Admin') {
-      where.subcity_id = admin.subcity;
-    }
+
     // Get complaints within date range
     const complaints = await PublicComplaint.findAll({
       where,
@@ -1394,23 +1074,8 @@ const getLocationHierarchy = async (req, res) => {
     let locations = {};
 
     if (admin.role === 'SuperAdmin') {
-      // SuperAdmin can see all cities and subcities
       locations = {
-        'Addis Ababa': {
-          subcities: ['Arada', 'Kirkos', 'Lideta', 'Bole', 'Yeka', 'Addis Ketema'],
-          departments: [
-            'Control and Awareness Department',
-            'Engineering Department',
-            'Support Administration Department',
-            'Control Center Department',
-          ],
-        },
-      };
-    } else if (admin.role === 'SubCityAdmin') {
-      // SubCityAdmin can only see their specific subcity
-      locations = {
-        [admin.city]: {
-          subcities: [admin.subcity],
+        'Dire Dawa': {
           departments: [
             'Control and Awareness Department',
             'Engineering Department',
@@ -1420,10 +1085,8 @@ const getLocationHierarchy = async (req, res) => {
         },
       };
     } else if (admin.role === 'Admin') {
-      // Department admin can see their department across all locations
       locations = {
-        'Addis Ababa': {
-          subcities: ['Arada', 'Kirkos', 'Lideta', 'Bole', 'Yeka', 'Addis Ketema'],
+        'Dire Dawa': {
           departments: [admin.department],
         },
       };
@@ -1435,8 +1098,6 @@ const getLocationHierarchy = async (req, res) => {
         locations,
         admin_scope: {
           role: admin.role,
-          city: admin.city,
-          subcity: admin.subcity,
           department: admin.department,
         },
       },
@@ -1453,20 +1114,14 @@ const getLocationHierarchy = async (req, res) => {
 // Get statistics with city/subcity filtering
 const getStatisticsWithLocation = async (req, res) => {
   try {
-    const { city, subcity } = req.query;
+    const { city } = req.query;
     const admin = req.user;
 
     const whereClause = {};
 
     // Role-based filtering
-    if (admin.role === 'SubCityAdmin') {
-      if (admin.city) whereClause.city = admin.city;
-      if (admin.subcity) whereClause.subcity = admin.subcity;
-    } else if (admin.role === 'Admin') {
+    if (admin.role === 'Admin') {
       if (admin.department) whereClause.department = admin.department;
-    } else if (admin.role === 'SuperAdmin') {
-      if (city) whereClause.city = city;
-      if (subcity) whereClause.subcity = subcity;
     }
 
     const employeeCount = await Employee.count({ where: whereClause });
@@ -1501,20 +1156,10 @@ const getRatingsAdmin = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -1590,20 +1235,10 @@ const getPublicRatingsAdmin = async (req, res) => {
     let where = {};
 
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -1632,10 +1267,7 @@ const getPublicRatingsAdmin = async (req, res) => {
           as: 'employee',
           attributes: ['id', 'first_name_en', 'last_name_en', 'position_en'],
         },
-        {
-          model: Subcity,
-          as: 'sub_city',
-        },
+
       ],
       order: [['created_at', 'DESC']],
     });
@@ -1665,9 +1297,7 @@ const respondToFeedback = async (req, res) => {
 
     const employee = await Employee.findByPk(feedback.employee_id);
     console.log(employee);
-    if (admin.role === 'SubCityAdmin' && employee?.subcity !== admin.subcity) {
-      return res.status(403).json({ message: 'Cannot respond to feedback from another subcity' });
-    }
+
     if (admin.role === 'Admin' && employee?.department !== admin.department) {
       return res.status(403).json({
         message: 'Cannot respond to feedback from another department',
@@ -1683,8 +1313,7 @@ const respondToFeedback = async (req, res) => {
       'feedback',
       feedback.id,
       req.user?.id,
-      feedback.sector_id,
-      feedback.subcity_id
+      feedback.sector_id
     );
     res.json({
       message: 'Response added successfully',
@@ -1735,8 +1364,7 @@ const respondToPublicFeedback = async (req, res) => {
       'feedback',
       feedback.id,
       req.user?.id,
-      feedback.sector_id,
-      feedback.subcity_id
+      feedback.sector_id
     );
     res.json({
       message: 'Response added successfully',
@@ -1770,20 +1398,10 @@ const exportEmployees = async (req, res) => {
 
     const currentAdmin = await Admin.findByPk(admin.id);
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -1795,7 +1413,7 @@ const exportEmployees = async (req, res) => {
         { model: require('../models').Sector, as: 'sector', required: false },
         { model: require('../models').Division, as: 'division', required: false },
         { model: require('../models').Department, as: 'department', required: false },
-        { model: require('../models').Subcity, as: 'subcity', required: false },
+
       ],
       order: [['created_at', 'DESC']],
     });
@@ -1811,7 +1429,7 @@ const exportEmployees = async (req, res) => {
       'Department',
       'Section',
       'City',
-      'Subcity',
+
       'Sector',
       'Division',
       'Created At',
@@ -1838,10 +1456,10 @@ const exportEmployees = async (req, res) => {
             emp.floor_number,
             `${emp.position_en}`,
             `${emp.department?.name_en || ''}`,
-            `${emp.subcity?.name_en || ''}`,
+            ``,
             `${emp.sector?.name_en || ''}`,
             `${emp.division?.name_en || ''}`,
-            `${emp.employeeDepartment?.name_en || ''}`,
+            `${emp.department?.name_en || ''}`,
             `${emp.created_at}`,
           ].join(',') + '\n';
       });
@@ -1873,10 +1491,10 @@ const exportEmployees = async (req, res) => {
           emp.floor_number,
           `${emp.position_en}`,
           `${emp.department?.name_en || ''}`,
-          `${emp.subcity?.name_en || ''}`,
+          ``,
           `${emp.sector?.name_en || ''}`,
           `${emp.division?.name_en || ''}`,
-          `${emp.employeeDepartment?.name_en || ''}`,
+          `${emp.department?.name_en || ''}`,
           `${emp.created_at}`,
         ]);
       });
@@ -1911,10 +1529,10 @@ const exportEmployees = async (req, res) => {
             emp.floor_number,
             `${emp.position_en}`,
             `${emp.department?.name_en || ''}`,
-            `${emp.subcity?.name_en || ''}`,
+            ``,
             `${emp.sector?.name_en || ''}`,
             `${emp.division?.name_en || ''}`,
-            `${emp.employeeDepartment?.name_en || ''}`,
+            `${emp.department?.name_en || ''}`,
             `${emp.created_at}`,
           ].join(' | ')
         );
@@ -1944,20 +1562,10 @@ const exportComplaints = async (req, res) => {
     let where = {};
     const currentAdmin = await Admin.findByPk(admin.id);
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -1970,7 +1578,7 @@ const exportComplaints = async (req, res) => {
         { model: require('../models').Division, as: 'division', required: false },
         { model: require('../models').Employee, as: 'employee', required: false },
         { model: require('../models').Department, as: 'department', required: false },
-        { model: require('../models').Subcity, as: 'sub_city', required: false },
+
       ],
       order: [['created_at', 'DESC']],
     });
@@ -1985,7 +1593,7 @@ const exportComplaints = async (req, res) => {
       'Status',
       'Sector',
       'Division',
-      'Subcity',
+
       'Created At',
     ];
 
@@ -2109,20 +1717,10 @@ const exportFeedback = async (req, res) => {
 
     let where = {};
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -2187,7 +1785,7 @@ module.exports = {
   getDepartments,
   logAdmins,
   exportReport,
-  exportSubcity,
+
   getComplaintTrends,
   getLocationHierarchy,
   getStatisticsWithLocation,

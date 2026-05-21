@@ -33,12 +33,7 @@ const restrictToLocation = (req, res, next) => {
     return next();
   }
 
-  // SubCityAdmin: Access only to their specific subcity
-  if (admin.role === 'SubCityAdmin') {
-    req.cityFilter = admin.city;
-    req.subcityFilter = admin.subcity;
-    return next();
-  }
+
 
   // Department Admin: Access to their department across all locations
   if (admin.role === 'Admin') {
@@ -57,9 +52,7 @@ const buildLocationFilter = (req) => {
     filters.city = req.cityFilter;
   }
 
-  if (req.subcityFilter) {
-    filters.subcity = req.subcityFilter;
-  }
+
 
   if (req.departmentFilter) {
     // Department filter can be applied to department fields

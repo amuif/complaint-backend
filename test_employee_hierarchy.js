@@ -86,7 +86,7 @@ async function testEmployeeHierarchy() {
         'last_name_en',
         'position_en',
         'office_number',
-        'section',
+        'profile_picture',
         'sector_id',
         'division_id',
         'department_id',
@@ -105,7 +105,7 @@ async function testEmployeeHierarchy() {
         },
         {
           model: Department,
-          as: 'employeeDepartment',
+          as: 'department',
           attributes: ['id', 'name'],
         },
         {
@@ -123,7 +123,7 @@ async function testEmployeeHierarchy() {
       console.log(`    Position: ${employee.position_en}`);
       console.log(`    Sector: ${employee.sector?.name || 'N/A'}`);
       console.log(`    Division: ${employee.division?.name || 'N/A'}`);
-      console.log(`    Department: ${employee.employeeDepartment?.name || 'N/A'}`);
+      console.log(`    Department: ${employee.department?.name || 'N/A'}`);
       console.log(`    Team: ${employee.team?.name || 'N/A'}`);
     });
 
@@ -162,7 +162,7 @@ async function testEmployeeHierarchy() {
       include: [
         {
           model: Department,
-          as: 'employeeDepartment',
+          as: 'department',
           attributes: ['id', 'name'],
         },
       ],
@@ -217,8 +217,7 @@ async function testEmployeeHierarchy() {
               position_en: 'HR Manager',
               office_number: '101',
               section: 'Administrative',
-              city: 'Addis Ababa',
-              subcity: 'Bole',
+              city: 'Dire Dawa',
               sector_id: 1,
               division_id: 1,
               department_id: 1,
@@ -231,7 +230,7 @@ async function testEmployeeHierarchy() {
                 id: 1,
                 name: 'Administrative Services',
               },
-              employeeDepartment: {
+              department: {
                 id: 1,
                 name: 'Human Resources',
               },

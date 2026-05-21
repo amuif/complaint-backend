@@ -51,7 +51,7 @@ const PublicFeedback = sequelize.define(
       allowNull: true,
       comment: 'Target employee',
     },
-    subcity_id: { type: DataTypes.INTEGER, allowNull: true },
+
 
     subject: {
       type: DataTypes.STRING(200),

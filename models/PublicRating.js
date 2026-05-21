@@ -50,7 +50,7 @@ const PublicRating = sequelize.define(
       comment: 'ID of the employee being rated',
     },
 
-    subcity_id: { type: DataTypes.INTEGER, allowNull: true },
+
     // Rating Metrics
     overall_rating: {
       type: DataTypes.INTEGER,

@@ -15,13 +15,11 @@ const Office = require('./Office');
 const Sector = require('./Sector');
 const Division = require('./Division');
 const Team = require('./Team');
-const Subcity = require('./Subcity');
 
 ActivityLog.belongsTo(Admin, { foreignKey: 'admin_id', as: 'admin' });
 ActivityLog.belongsTo(Sector, { foreignKey: 'sector_id', as: 'sector' });
 ActivityLog.belongsTo(Department, { foreignKey: 'department_id', as: 'department' });
 ActivityLog.belongsTo(Division, { foreignKey: 'division_id', as: 'division' });
-ActivityLog.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
 ActivityLog.belongsTo(PublicComplaint, {
   foreignKey: 'public_complaint_id',
   as: 'public-complaint',
@@ -29,11 +27,6 @@ ActivityLog.belongsTo(PublicComplaint, {
 ActivityLog.belongsTo(PublicRating, { foreignKey: 'public_rating_id', as: 'public-rating' });
 ActivityLog.belongsTo(PublicFeedback, { foreignKey: 'public_feedback_id', as: 'public-feedback' });
 // Complaint models
-Complaint.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(Complaint, { foreignKey: 'subcity_id', as: 'complaints' });
-
-PublicComplaint.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(PublicComplaint, { foreignKey: 'subcity_id', as: 'public_complaints' });
 
 // PublicComplaint <-> ComplaintAttachment
 PublicComplaint.hasOne(ComplaintAttachment, {
@@ -45,18 +38,6 @@ ComplaintAttachment.belongsTo(PublicComplaint, {
   as: 'complaint-attachment',
 });
 // Rating models
-Rating.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(Rating, { foreignKey: 'subcity_id', as: 'ratings' });
-
-PublicRating.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(PublicRating, { foreignKey: 'subcity_id', as: 'public_ratings' });
-
-// Feedback models
-Feedback.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(Feedback, { foreignKey: 'subcity_id', as: 'feedbacks' });
-
-PublicFeedback.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'sub_city' });
-Subcity.hasMany(PublicFeedback, { foreignKey: 'subcity_id', as: 'public_feedbacks' });
 // Define relationships
 Rating.belongsTo(Employee, { foreignKey: 'employee_id' });
 Feedback.belongsTo(Employee, { foreignKey: 'employee_id' });
@@ -66,16 +47,13 @@ PasswordReset.belongsTo(Admin, { foreignKey: 'admin_id' });
 Admin.hasMany(PasswordReset, { foreignKey: 'admin_id' });
 Admin.belongsTo(Sector, { foreignKey: 'sector_id', as: 'sector' });
 Sector.hasMany(Admin, { foreignKey: 'sector_id', as: 'admins' });
-Sector.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
+
 
 Admin.belongsTo(Division, { foreignKey: 'division_id', as: 'division' });
 Division.hasMany(Admin, { foreignKey: 'division_id', as: 'admins' });
 
 Admin.belongsTo(Department, { foreignKey: 'department_id', as: 'department' });
 Department.hasMany(Admin, { foreignKey: 'department_id', as: 'admins' });
-
-Admin.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
-Subcity.hasMany(Admin, { foreignKey: 'subcity_id', as: 'admins' });
 // Public models relationships
 Department.hasMany(Office, { foreignKey: 'department_id', as: 'offices' });
 Office.belongsTo(Department, { foreignKey: 'department_id', as: 'department' });
@@ -100,7 +78,6 @@ Employee.belongsTo(Department, {
   as: 'department',
 });
 Employee.belongsTo(Team, { foreignKey: 'team_id', as: 'team' });
-Employee.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
 Employee.hasMany(Complaint, {
   foreignKey: 'employee_id',
   as: 'complaints',
@@ -218,11 +195,6 @@ Division.hasMany(PublicFeedback, {
   foreignKey: 'division_id',
   as: 'public_feedbacks',
 });
-Division.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
-Subcity.hasMany(Division, { foreignKey: 'subcity_id', as: 'divisions' });
-
-Department.belongsTo(Subcity, { foreignKey: 'subcity_id', as: 'subcity' });
-Subcity.hasMany(Department, { foreignKey: 'subcity_id', as: 'departments' });
 Department.hasMany(PublicFeedback, {
   foreignKey: 'department_id',
   as: 'public_feedbacks',
@@ -252,5 +224,4 @@ module.exports = {
   Sector,
   Division,
   Team,
-  Subcity,
 };

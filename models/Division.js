@@ -14,11 +14,7 @@ const Division = sequelize.define(
     office_location_en: { type: DataTypes.STRING(50), allowNull: false },
     office_location_am: { type: DataTypes.STRING(50), allowNull: false },
     office_location_af: { type: DataTypes.STRING(50), allowNull: false },
-    subcity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: 'subcities', key: 'id' },
-    },
+
     sector_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -32,7 +28,6 @@ const Division = sequelize.define(
     updatedAt: 'updated_at',
     indexes: [
       { fields: ['sector_id'], name: 'idx_division_sector' },
-      { fields: ['subcity_id'], name: 'idx_division_subcity' },
     ],
   }
 );
@@ -44,10 +39,7 @@ Division.associate = (models) => {
     as: 'sector',
   });
 
-  Division.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id',
-    as: 'subcity',
-  });
+
 
   // Organizational Structure (hasMany)
   Division.hasMany(models.Department, {

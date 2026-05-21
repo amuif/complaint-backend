@@ -46,11 +46,7 @@ const Employee = sequelize.define(
       references: { model: 'teams', key: 'id' },
     },
 
-    subcity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: 'subcities', key: 'id' },
-    },
+
     works_in_head_office: { type: DataTypes.BOOLEAN },
 
     email: { type: DataTypes.STRING(100), allowNull: true },

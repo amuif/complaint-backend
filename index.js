@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
+
 // Import database service
 const { initDb } = require('./services/databaseService');
 

@@ -15,7 +15,6 @@ const {
   Division,
   Team,
 } = require('../models');
-const Subcity = require('../models/Subcity');
 
 // Helper function to generate tracking codes
 const generateTrackingCode = () => {
@@ -249,10 +248,6 @@ const publicController = {
             as: 'sector',
           },
           {
-            model: Subcity,
-            as: 'subcity',
-          },
-          {
             model: Division,
             as: 'division',
           },
@@ -374,7 +369,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -422,9 +417,7 @@ const publicController = {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -441,7 +434,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
           },
           {
             model: Team,
@@ -498,9 +491,7 @@ const publicController = {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -518,7 +509,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
           },
           {
             model: Team,
@@ -589,9 +580,7 @@ const publicController = {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -608,7 +597,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
           },
           {
             model: Team,
@@ -685,9 +674,7 @@ const publicController = {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -705,7 +692,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
           },
           {
             model: Team,
@@ -789,9 +776,7 @@ const publicController = {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -808,7 +793,7 @@ const publicController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
           },
           {
             model: Team,
@@ -1430,9 +1415,6 @@ const publicController = {
           'position_en',
           'department_id',
           'office_number',
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
         ],
         order: [['first_name_en', 'ASC']],
@@ -1475,9 +1457,6 @@ const publicController = {
           'position_en',
           'department_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
         ],
       });
@@ -1537,13 +1516,8 @@ const publicController = {
     try {
       const sectors = await Sector.findAll({
         order: [['name_en', 'ASC']],
-        include: [
-          {
-            model: Subcity,
-            as: 'subcity',
-          },
-        ],
       });
+      console.log("Sectors",sectors)
 
       res.json({
         success: true,

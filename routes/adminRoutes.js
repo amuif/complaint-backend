@@ -15,7 +15,6 @@ const {
   getDepartments,
   logAdmins,
   exportReport,
-  exportSubcity,
   exportEmployees,
   exportComplaints,
   exportFeedback,
@@ -52,7 +51,7 @@ const {
   deleteDepartment,
   updateDepartment,
 } = require('../controllers/departmentController');
-const { createSubcity, deleteSubcity, updateSubcity } = require('../controllers/SubcityController');
+
 const { getNotifications } = require('../controllers/notificationController');
 
 // Authentication routes
@@ -169,24 +168,7 @@ router.put(
   upload.fields([{ name: 'profile_picture', maxCount: 1 }]),
   updateDepartment
 );
-router.put(
-  '/subcities',
-  authenticateToken,
-  restrictTo('SuperAdmin', 'SuperAdminSuppoerter'),
-  updateSubcity
-);
-router.delete(
-  '/subcities',
-  authenticateToken,
-  restrictTo('SuperAdmin', 'SuperAdminSuppoerter'),
-  deleteSubcity
-);
-router.post(
-  '/subcities',
-  authenticateToken,
-  restrictTo('SuperAdmin', 'SuperAdminSuppoerter'),
-  createSubcity
-);
+
 
 // Employee management routes (Admin access required)
 router.get(
@@ -287,12 +269,7 @@ router.get(
   restrictTo('SuperAdmin', 'SuperAdminSuppoerter', 'Admin', 'Editor'),
   exportReport
 );
-router.get(
-  '/export-subcity',
-  authenticateToken,
-  restrictTo('SuperAdmin', 'SuperAdminSuppoerter', 'Admin', 'Editor'),
-  exportSubcity
-);
+
 
 //notifications
 router.get(

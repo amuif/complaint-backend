@@ -33,9 +33,6 @@ const employeeHierarchyController = {
       // Apply role-based filtering
       if (admin.role === 'Admin') {
         where[`department_${lang}`] = admin.department;
-      } else if (admin.role === 'SubCityAdmin') {
-        where.city = admin.city;
-        where.subcity = admin.subcity;
       } else if (admin.role === 'CityAdmin') {
         where.city = admin.city;
       }
@@ -51,9 +48,6 @@ const employeeHierarchyController = {
           'floor_number',
           [`position_${lang}`, 'position'],
           [`department_${lang}`, 'department'],
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
           'sector_id',
           'division_id',
@@ -76,7 +70,7 @@ const employeeHierarchyController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
             required: false,
           },
@@ -101,7 +95,7 @@ const employeeHierarchyController = {
         hierarchy: {
           sector: employee.sector || null,
           division: employee.division || null,
-          department: employee.employeeDepartment || null,
+          department: employee.department || null,
           team: employee.team || null,
         },
       }));
@@ -164,9 +158,6 @@ const employeeHierarchyController = {
       // Apply role-based filtering
       if (admin.role === 'Admin') {
         where[`department_${lang}`] = admin.department;
-      } else if (admin.role === 'SubCityAdmin') {
-        where.city = admin.city;
-        where.subcity = admin.subcity;
       } else if (admin.role === 'CityAdmin') {
         where.city = admin.city;
       }
@@ -182,9 +173,6 @@ const employeeHierarchyController = {
           'floor_number',
           [`position_${lang}`, 'position'],
           [`department_${lang}`, 'department'],
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
           'sector_id',
           'division_id',
@@ -207,7 +195,7 @@ const employeeHierarchyController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
             required: false,
           },
@@ -232,7 +220,7 @@ const employeeHierarchyController = {
         hierarchy: {
           sector: employee.sector || null,
           division: employee.division || null,
-          department: employee.employeeDepartment || null,
+          department: employee.department || null,
           team: employee.team || null,
         },
       }));
@@ -303,9 +291,6 @@ const employeeHierarchyController = {
       // Apply role-based filtering
       if (admin.role === 'Admin') {
         where[`department_${lang}`] = admin.department;
-      } else if (admin.role === 'SubCityAdmin') {
-        where.city = admin.city;
-        where.subcity = admin.subcity;
       } else if (admin.role === 'CityAdmin') {
         where.city = admin.city;
       }
@@ -321,9 +306,6 @@ const employeeHierarchyController = {
           'floor_number',
           [`position_${lang}`, 'position'],
           [`department_${lang}`, 'department'],
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
           'sector_id',
           'division_id',
@@ -346,7 +328,7 @@ const employeeHierarchyController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
             required: false,
           },
@@ -371,7 +353,7 @@ const employeeHierarchyController = {
         hierarchy: {
           sector: employee.sector || null,
           division: employee.division || null,
-          department: employee.employeeDepartment || null,
+          department: employee.department || null,
           team: employee.team || null,
         },
       }));
@@ -449,9 +431,6 @@ const employeeHierarchyController = {
       // Apply role-based filtering
       if (admin.role === 'Admin') {
         where[`department_${lang}`] = admin.department;
-      } else if (admin.role === 'SubCityAdmin') {
-        where.city = admin.city;
-        where.subcity = admin.subcity;
       } else if (admin.role === 'CityAdmin') {
         where.city = admin.city;
       }
@@ -467,9 +446,6 @@ const employeeHierarchyController = {
           'floor_number',
           [`position_${lang}`, 'position'],
           [`department_${lang}`, 'department'],
-          'section',
-          'city',
-          'subcity',
           'profile_picture',
           'sector_id',
           'division_id',
@@ -492,7 +468,7 @@ const employeeHierarchyController = {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
             required: false,
           },
@@ -517,7 +493,7 @@ const employeeHierarchyController = {
         hierarchy: {
           sector: employee.sector || null,
           division: employee.division || null,
-          department: employee.employeeDepartment || null,
+          department: employee.department || null,
           team: employee.team || null,
         },
       }));

@@ -15,7 +15,7 @@ const Complaint = sequelize.define(
     sector_id: { type: DataTypes.INTEGER, allowNull: true },
     office_id: { type: DataTypes.INTEGER, allowNull: true },
     employee_id: { type: DataTypes.INTEGER, allowNull: true },
-    subcity_id: { type: DataTypes.INTEGER, allowNull: true },
+
     responded_by: {
       type: DataTypes.INTEGER,
       references: {

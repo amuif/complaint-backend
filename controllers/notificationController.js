@@ -1,4 +1,4 @@
-const { ActivityLog, Admin, Subcity, Sector, PublicRating, PublicComplaint } = require('../models');
+const { ActivityLog, Admin, Sector, PublicRating, PublicComplaint } = require('../models');
 
 const getNotifications = async (req, res) => {
   try {
@@ -7,10 +7,8 @@ const getNotifications = async (req, res) => {
     const where = {};
 
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role)) {
-      if (currentAdmin.sector_id && currentAdmin.subcity_id) {
+      if (currentAdmin.sector_id) {
         where.sector_id = currentAdmin.sector_id;
-      } else if (currentAdmin.subcity_id) {
-        where.subcity_id = currentAdmin.subcity_id;
       }
     }
 
@@ -24,7 +22,6 @@ const getNotifications = async (req, res) => {
         'entity_id',
         'details',
         'sector_id',
-        'subcity_id',
         'created_at',
       ],
       include: [
@@ -38,11 +35,7 @@ const getNotifications = async (req, res) => {
           as: 'sector',
           attributes: ['id', 'name_en', 'name_am', 'name_af'], // Only select needed fields
         },
-        {
-          model: Subcity,
-          as: 'subcity',
-          attributes: ['id', 'name_en', 'name_am', 'name_af'], // Only select needed fields
-        },
+
       ],
       order: [['created_at', 'DESC']],
     });

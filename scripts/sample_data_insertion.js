@@ -135,11 +135,10 @@ const SAMPLE_DATA = {
       username: 'bole_admin',
       password: 'password123',
       email: 'bole@office.gov.et',
-      role: 'SubCityAdmin',
+      role: 'Admin',
       first_name: 'Kebede',
       last_name: 'Tadesse',
-      city: 'Addis Ababa',
-      subcity: 'Bole',
+      city: 'Dire Dawa',
       section: 'Bole',
       phone: '+251-11-2222222',
       profile_picture:
@@ -150,11 +149,10 @@ const SAMPLE_DATA = {
       username: 'arada_admin',
       password: 'password123',
       email: 'arada@office.gov.et',
-      role: 'SubCityAdmin',
+      role: 'Admin',
       first_name: 'Meron',
       last_name: 'Haile',
-      city: 'Addis Ababa',
-      subcity: 'Arada',
+      city: 'Dire Dawa',
       section: 'Arada',
       phone: '+251-11-3333333',
       profile_picture:
@@ -168,7 +166,7 @@ const SAMPLE_DATA = {
       role: 'Admin',
       first_name: 'Ahmed',
       last_name: 'Kassim',
-      city: 'Addis Ababa',
+      city: 'Dire Dawa',
       department: 'Control and Awareness Department',
       phone: '+251-11-4444444',
       profile_picture:
@@ -182,7 +180,7 @@ const SAMPLE_DATA = {
       role: 'Admin',
       first_name: 'Sara',
       last_name: 'Getachew',
-      city: 'Addis Ababa',
+      city: 'Dire Dawa',
       department: 'Engineering Department',
       phone: '+251-11-5555555',
       profile_picture:
@@ -196,7 +194,7 @@ const SAMPLE_DATA = {
       role: 'Admin',
       first_name: 'Daniel',
       last_name: 'Mulugeta',
-      city: 'Addis Ababa',
+      city: 'Dire Dawa',
       department: 'Support Administration Department',
       phone: '+251-11-6666666',
       profile_picture:
@@ -210,7 +208,7 @@ const SAMPLE_DATA = {
       role: 'Admin',
       first_name: 'Rahel',
       last_name: 'Abebe',
-      city: 'Addis Ababa',
+      city: 'Dire Dawa',
       department: 'Control Center Department',
       phone: '+251-11-7777777',
       profile_picture:
@@ -242,8 +240,7 @@ const SAMPLE_DATA = {
       department_am: 'ቁጥጥርና ግንዛቤ ዘርፍ',
       department_af: 'Kutaataa fi Hubannoo Damee',
       section: 'Bole',
-      city: 'Addis Ababa',
-      subcity: 'Bole',
+      city: 'Dire Dawa',
       email: 'ahmed.hassan@office.gov.et',
       phone: '+251-911-123456',
       bio_en: 'Experienced control officer with 8 years in public service',
@@ -264,7 +261,7 @@ const SAMPLE_DATA = {
       complainant_name: 'Tigist Bekele',
       phone_number: '+251-911-111111',
       email: 'tigist.bekele@email.com',
-      sub_city: 'Bole',
+      sub_city: null,
       kebele: '15',
       complaint_description:
         'Long waiting time and poor service quality at the licensing office. Staff were not helpful and the process was very slow.',
@@ -509,8 +506,8 @@ async function insertAdmins(connection) {
   const query = `
     INSERT INTO admins (
       id, username, password, email, role, first_name, last_name,
-      city, subcity, section, department, phone, profile_picture
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      city, section, department, phone, profile_picture
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   for (const admin of SAMPLE_DATA.admins) {
@@ -525,7 +522,6 @@ async function insertAdmins(connection) {
       admin.first_name,
       admin.last_name,
       admin.city,
-      admin.subcity,
       admin.section,
       admin.department,
       admin.phone,
@@ -547,10 +543,10 @@ async function insertEmployees(connection) {
       office_id, office_number, floor_number,
       position_en, position_am, position_af,
       department_en, department_am, department_af,
-      section, city, subcity, email, phone,
+      section, city, email, phone,
       bio_en, bio_am, bio_af, years_of_service,
       education_level, hire_date, profile_picture
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   for (const emp of SAMPLE_DATA.employees) {
@@ -577,7 +573,6 @@ async function insertEmployees(connection) {
       emp.department_af,
       emp.section,
       emp.city,
-      emp.subcity,
       emp.email,
       emp.phone,
       emp.bio_en,

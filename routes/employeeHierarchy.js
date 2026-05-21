@@ -18,7 +18,7 @@ const employeeHierarchyController = require('../controllers/employeeHierarchyCon
 router.get(
   '/sector/:sectorId',
   authenticateToken,
-  restrictTo('SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin'),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   employeeHierarchyController.getEmployeesBySector
 );
 
@@ -32,7 +32,7 @@ router.get(
 router.get(
   '/division/:divisionId',
   authenticateToken,
-  restrictTo('SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin'),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   employeeHierarchyController.getEmployeesByDivision
 );
 
@@ -46,7 +46,7 @@ router.get(
 router.get(
   '/department/:departmentId',
   authenticateToken,
-  restrictTo('SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin'),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   employeeHierarchyController.getEmployeesByDepartment
 );
 
@@ -60,7 +60,7 @@ router.get(
 router.get(
   '/team/:teamId',
   authenticateToken,
-  restrictTo('SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin'),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   employeeHierarchyController.getEmployeesByTeam
 );
 

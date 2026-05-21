@@ -15,7 +15,7 @@ const PublicComplaint = sequelize.define(
     sector_id: { type: DataTypes.INTEGER, allowNull: true },
     office_id: { type: DataTypes.INTEGER, allowNull: true },
     employee_id: { type: DataTypes.INTEGER, allowNull: true },
-    subcity_id: { type: DataTypes.INTEGER, allowNull: true },
+
     responded_by: {
       type: DataTypes.INTEGER,
       references: {
@@ -128,10 +128,7 @@ PublicComplaint.associate = (models) => {
     foreignKey: 'department_id',
     as: 'department',
   });
-  PublicComplaint.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id',
-    as: 'sub_city',
-  });
+
 
   PublicComplaint.belongsTo(models.Division, {
     foreignKey: 'division_id',

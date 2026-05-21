@@ -39,11 +39,7 @@ const ActivityLog = sequelize.define(
       allowNull: true,
       comment: 'sector source for log',
     },
-    subcity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: 'subcity source for log',
-    },
+
 
     created_at: {
       type: DataTypes.DATE,
@@ -61,8 +57,7 @@ const ActivityLog = sequelize.define(
       { fields: ['action'], name: 'idx_log_action' },
       { fields: ['entity_type', 'entity_id'], name: 'idx_log_entity' },
       { fields: ['created_at'], name: 'idx_log_date' },
-      { fields: ['sector_id'], name: 'idx_log_sector' }, // Added index
-      { fields: ['subcity_id'], name: 'idx_log_subcity' }, // Added index
+      { fields: ['sector_id'], name: 'idx_log_sector' },
     ],
     comment: 'System activity logging',
   }
@@ -85,12 +80,7 @@ ActivityLog.associate = (models) => {
     onUpdate: 'CASCADE',
   });
 
-  ActivityLog.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id',
-    as: 'subcity',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
-  });
+
 };
 
 module.exports = ActivityLog;

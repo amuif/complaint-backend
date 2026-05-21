@@ -7,8 +7,7 @@ class ActivityLogService {
     entityId,
     adminId = null,
     details = null,
-    sectorId = null,
-    subcityId = null
+    sectorId = null
   ) {
     try {
       await ActivityLog.create({
@@ -18,7 +17,6 @@ class ActivityLogService {
         entity_id: entityId,
         details: details,
         sector_id: sectorId,
-        subcity_id: subcityId,
       });
       console.log(`✅ Logged CREATE ${entityType} #${entityId}`);
     } catch (error) {
@@ -32,8 +30,7 @@ class ActivityLogService {
     entityId,
     adminId = null,
     details = null,
-    sectorId = null,
-    subcityId = null
+    sectorId = null
   ) {
     try {
       await ActivityLog.create({
@@ -43,7 +40,6 @@ class ActivityLogService {
         entity_id: entityId,
         details: details,
         sector_id: sectorId,
-        subcity_id: subcityId,
       });
       console.log(`✅ Logged UPDATE ${entityType} #${entityId}`);
     } catch (error) {
@@ -57,8 +53,7 @@ class ActivityLogService {
     entityId,
     adminId = null,
     details = null,
-    sectorId = null,
-    subcityId = null
+    sectorId = null
   ) {
     try {
       await ActivityLog.create({
@@ -68,7 +63,6 @@ class ActivityLogService {
         entity_id: entityId,
         details: details,
         sector_id: sectorId,
-        subcity_id: subcityId,
       });
       console.log(`✅ Logged DELETE ${entityType} #${entityId}`);
     } catch (error) {
@@ -83,8 +77,7 @@ class ActivityLogService {
     entityId,
     adminId = null,
     details = null,
-    sectorId = null,
-    subcityId = null
+    sectorId = null
   ) {
     try {
       await ActivityLog.create({
@@ -94,7 +87,6 @@ class ActivityLogService {
         entity_id: entityId,
         details: details,
         sector_id: sectorId,
-        subcity_id: subcityId,
       });
       console.log(`✅ Logged ${action} ${entityType} #${entityId}`);
     } catch (error) {

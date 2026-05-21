@@ -46,23 +46,7 @@ const Admin = sequelize.define(
       allowNull: true,
       comment: 'City jurisdiction (optional for super roles)',
     },
-    subcity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: 'Subcity jurisdiction (required for SubCity* roles, NULL for super roles)',
-      validate: {
-        customValidator(value) {
-          if (['SuperAdmin', 'SuperAdminSupporter'].includes(this.role) && value !== null) {
-            throw new Error(
-              'SuperAdmin and SuperAdminSupporter must have NULL subcity_id (global scope).'
-            );
-          }
-          if (['SubCityAdmin', 'SubCityAdminSupporter'].includes(this.role) && value === null) {
-            throw new Error('SubCityAdmin and SubCityAdminSupporter must have a valid subcity_id.');
-          }
-        },
-      },
-    },
+
     department_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -136,11 +120,7 @@ const Admin = sequelize.define(
 
 // Associations
 Admin.associate = (models) => {
-  Admin.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
-  });
+
   Admin.belongsTo(models.Department, {
     foreignKey: 'department_id',
     onDelete: 'SET NULL',

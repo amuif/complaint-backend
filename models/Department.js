@@ -25,11 +25,7 @@ const Department = sequelize.define(
       allowNull: true,
       references: { model: 'divisions', key: 'id' },
     },
-    subcity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: 'subcities', key: 'id' },
-    },
+
   },
   {
     tableName: 'departments',
@@ -39,7 +35,6 @@ const Department = sequelize.define(
     indexes: [
       { fields: ['name_en'], name: 'idx_dept_name_en' },
       { fields: ['division_id'], name: 'departments_division_id' },
-      { fields: ['subcity_id'], name: 'idx_dept_subcity' },
       { fields: ['sector_id'], name: 'idx_dept_sector' }, // Added index
     ],
   }
@@ -101,10 +96,7 @@ Department.associate = (models) => {
     as: 'sector',
   });
 
-  Department.belongsTo(models.Subcity, {
-    foreignKey: 'subcity_id',
-    as: 'subcity',
-  });
+
 
   // Teams & Offices
   Department.hasMany(models.Team, {

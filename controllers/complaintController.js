@@ -13,7 +13,7 @@ const {
 const { validateLanguage, addVoiceFileUrl } = require('../utils/helpers');
 const { v4: uuidv4 } = require('uuid');
 const { Op, where } = require('sequelize');
-const Subcity = require('../models/Subcity');
+
 
 // Create complaint
 const createComplaint = async (req, res) => {
@@ -47,7 +47,7 @@ const createComplaint = async (req, res) => {
     const complaintData = {
       complainant_name,
       phone_number,
-      subcity,
+
       // province,
       department_id,
       employee_id: employee_id ? parseInt(employee_id) : null,
@@ -96,7 +96,7 @@ const getComplaints = async (req, res) => {
         'id',
         'complainant_name',
         'phone_number',
-        'section',
+        // 'section',
         // "province",
         'department_id',
         'employee_id',
@@ -119,7 +119,7 @@ const getComplaints = async (req, res) => {
             'floor_number',
             [`position_${lang}`, 'position'],
             'department_id',
-            'section',
+            'profile_picture',
           ],
         },
       ],
@@ -146,20 +146,10 @@ const getComplaintsAdmin = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
     let where = {};
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -180,10 +170,7 @@ const getComplaintsAdmin = async (req, res) => {
           as: 'sector',
         },
 
-        {
-          model: Subcity,
-          as: 'sub_city',
-        },
+
 
         {
           model: Employee,
@@ -239,9 +226,7 @@ const resolveComplaint = async (req, res) => {
       return res.status(403).json({ message: 'Cannot resolve complaint from another department' });
     }
 
-    if (admin.role === 'SubCityAdmin' && complaint.section !== admin.section) {
-      return res.status(403).json({ message: 'Cannot resolve complaint from another section' });
-    }
+
 
     if (isPublicComplaint) {
       await PublicComplaint.update({ status }, { where: { id } });

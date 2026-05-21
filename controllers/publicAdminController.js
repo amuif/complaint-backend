@@ -251,8 +251,7 @@ const publicAdminController = {
             complaint_type: complaint.complaint_type,
             priority: complaint.priority,
           },
-          complaint.sector_id,
-          complaint.subcity_id
+          complaint.sector_id
         );
 
         res.json({
@@ -552,8 +551,7 @@ const publicAdminController = {
           'feedback',
           feedback.id,
           req.user?.id,
-          feedback.sector_id,
-          feedback.subcity_id
+          feedback.sector_id
         );
 
         res.json({

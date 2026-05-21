@@ -40,7 +40,7 @@ const validateAdminCreation = [
     .withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
     .withMessage('Password must contain lowercase, uppercase, number, and special character'),
-  body('role').isIn(['SuperAdmin', 'Admin', 'SubCityAdmin']).withMessage('Invalid role'),
+  body('role').isIn(['SuperAdmin', 'Admin', 'Editor', 'Viewer']).withMessage('Invalid role'),
   body('department')
     .optional()
     .isLength({ min: 2, max: 100 })

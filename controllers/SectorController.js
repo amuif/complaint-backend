@@ -12,7 +12,6 @@ const createSector = async (req, res) => {
       office_location_en,
       office_location_am,
       office_location_af,
-      subcity_id,
     } = req.body;
     if (
       !name_am ||
@@ -39,7 +38,6 @@ const createSector = async (req, res) => {
       office_location_en,
       office_location_am,
       office_location_af,
-      subcity_id,
       profile_picture: uploadedProfilePicture,
       created_at: new Date(),
     };
@@ -85,7 +83,6 @@ const updateSector = async (req, res) => {
       office_location_en,
       office_location_am,
       office_location_af,
-      subcity_id,
     } = req.body;
     if (!id) {
       console.log('id is not found');
@@ -110,7 +107,6 @@ const updateSector = async (req, res) => {
         office_location_en,
         office_location_am,
         office_location_af,
-        subcity_id,
       },
       { where: { id } }
     );

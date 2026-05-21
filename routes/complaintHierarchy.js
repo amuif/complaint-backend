@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const complaintHierarchyController = require('../controllers/complaintHierarchyController');
-const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const { authenticateToken, restrictTo } = require('../middleware/auth');
 
 // =====================================
 // COMPLAINT HIERARCHY FILTERING ROUTES
@@ -24,7 +24,7 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 router.get(
   '/sector/:sectorId',
   authenticateToken,
-  authorizeRoles(['SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin']),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   complaintHierarchyController.getComplaintsBySector
 );
 
@@ -38,7 +38,7 @@ router.get(
 router.get(
   '/division/:divisionId',
   authenticateToken,
-  authorizeRoles(['SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin']),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   complaintHierarchyController.getComplaintsByDivision
 );
 
@@ -52,7 +52,7 @@ router.get(
 router.get(
   '/department/:departmentId',
   authenticateToken,
-  authorizeRoles(['SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin']),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   complaintHierarchyController.getComplaintsByDepartment
 );
 
@@ -66,7 +66,7 @@ router.get(
 router.get(
   '/team/:teamId',
   authenticateToken,
-  authorizeRoles(['SuperAdmin', 'CityAdmin', 'SubCityAdmin', 'Admin']),
+  restrictTo('SuperAdmin', 'CityAdmin', 'Admin'),
   complaintHierarchyController.getComplaintsByTeam
 );
 

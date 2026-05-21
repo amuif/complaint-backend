@@ -45,18 +45,6 @@ router.get('/departments/:departmentId/teams', publicController.getTeamsByDepart
 
 router.get('/departments', publicController.getDepartments);
 
-// Get subcities data
-router.get('/subcities', publicController.getSubcities);
-router.get('/subcities/:subcityId', publicController.getSubcityAdmin);
-router.get('/subcities/:subcityId/directors', publicController.getDivisionsBySubcityAdmin);
-router.get(
-  '/subcities/:subcityId/division/:divisionId',
-  publicController.getDepartmentsBySubcityDivisions
-);
-router.get('/subcities/:subcityId/employees', publicController.getEmployeesBySubcity);
-
-// Get main office employees
-router.get('/main/employees', publicController.getMainOfficeEmployees);
 
 // Get offices by department
 router.get('/departments/:departmentId/offices', publicController.getOfficesByDepartment);
@@ -71,7 +59,8 @@ router.get('/departments', publicController.getDepartments);
 
 // Get all teams
 router.get('/teams', publicController.getTeams);
-
+// Get main office employees
+router.get('/main/employees', publicController.getMainOfficeEmployees);
 // Get employees with organizational hierarchy
 router.get('/employees/hierarchy', publicController.getEmployeesWithHierarchy);
 

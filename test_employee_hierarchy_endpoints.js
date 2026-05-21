@@ -40,9 +40,7 @@ async function testEmployeeHierarchyEndpoints() {
           'last_name_en',
           'position_en',
           'office_number',
-          'section',
-          'city',
-          'subcity',
+          'profile_picture',
           'sector_id',
           'division_id',
           'department_id',
@@ -61,7 +59,7 @@ async function testEmployeeHierarchyEndpoints() {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -110,7 +108,7 @@ async function testEmployeeHierarchyEndpoints() {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -161,7 +159,7 @@ async function testEmployeeHierarchyEndpoints() {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -212,7 +210,7 @@ async function testEmployeeHierarchyEndpoints() {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -273,7 +271,7 @@ async function testEmployeeHierarchyEndpoints() {
           },
           {
             model: Department,
-            as: 'employeeDepartment',
+            as: 'department',
             attributes: ['id', 'name'],
           },
           {
@@ -300,14 +298,13 @@ async function testEmployeeHierarchyEndpoints() {
                   office_number: sampleEmployee.office_number,
                   section: sampleEmployee.section,
                   city: sampleEmployee.city,
-                  subcity: sampleEmployee.subcity,
                   sector_id: sampleEmployee.sector_id,
                   division_id: sampleEmployee.division_id,
                   department_id: sampleEmployee.department_id,
                   team_id: sampleEmployee.team_id,
                   sector: sampleEmployee.sector,
                   division: sampleEmployee.division,
-                  employeeDepartment: sampleEmployee.employeeDepartment,
+                  department: sampleEmployee.department,
                   team: sampleEmployee.team,
                 },
               ],

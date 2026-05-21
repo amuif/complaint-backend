@@ -10,7 +10,7 @@ const {
 } = require('../models');
 const { validateLanguage, getSentiment, addProfilePictureUrl } = require('../utils/helpers');
 const { Op } = require('sequelize');
-const Subcity = require('../models/Subcity');
+
 const ActivityLogService = require('../services/adminLogsService');
 // Create feedback
 const createFeedback = async (req, res) => {
@@ -18,7 +18,7 @@ const createFeedback = async (req, res) => {
     const {
       full_name,
       phone_number,
-      subcity,
+
       sector_id,
       division_id,
       department_id,
@@ -35,8 +35,8 @@ const createFeedback = async (req, res) => {
     //     .status(400)
     //     .json({ message: "Invalid language. Use en, am, or af." });
     // }
-    if (!phone_number || !section || !comment) {
-      return res.status(400).json({ message: 'Phone number, section, and comment are required' });
+    if (!phone_number || !comment) {
+      return res.status(400).json({ message: 'Phone number and comment are required' });
     }
     if (rating && ![1, 2, 3, 4, 5].includes(Number(rating))) {
       return res.status(400).json({ message: 'Rating must be between 1 and 5' });
@@ -45,7 +45,7 @@ const createFeedback = async (req, res) => {
     const feedbackData = {
       full_name,
       phone_number,
-      subcity,
+
       sector_id,
       division_id,
       department_id,
@@ -60,8 +60,7 @@ const createFeedback = async (req, res) => {
       'feedback',
       feedback.id,
       req.user?.id,
-      feedback.sector_id,
-      feedback.subcity_id
+      feedback.sector_id
     );
 
     let employeeDetails = null;
@@ -76,7 +75,6 @@ const createFeedback = async (req, res) => {
           'floor_number',
           [`position_${lang}`, 'position'],
           [`department_${lang}`, 'department'],
-          'section',
           'profile_picture',
         ],
       });
@@ -127,20 +125,10 @@ const getFeedbackAdmin = async (req, res) => {
     const currentAdmin = await Admin.findByPk(admin.id);
 
     if (['Admin', 'Editor', 'Visitor'].includes(admin.role) && currentAdmin) {
-      if (!currentAdmin.subcity_id) {
-        if (currentAdmin.division_id) {
-          console.log('there is a division_id');
-          where.division_id = currentAdmin.division_id;
-        } else {
-          console.log('there is not a division_id');
-          where.sector_id = currentAdmin.sector_id;
-        }
+      if (currentAdmin.division_id) {
+        where.division_id = currentAdmin.division_id;
       } else {
-        if (currentAdmin.division_id) {
-          where.division_id = currentAdmin.division_id;
-        } else {
-          where.subcity_id = currentAdmin.subcity_id;
-        }
+        where.sector_id = currentAdmin.sector_id;
       }
     } else {
       console.warn('currentAdmin is null or role not allowed');
@@ -173,10 +161,7 @@ const getFeedbackAdmin = async (req, res) => {
           as: 'employee',
         },
 
-        {
-          model: Subcity,
-          as: 'sub_city',
-        },
+
       ],
       order: [['created_at', 'DESC']],
     });
