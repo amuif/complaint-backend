@@ -40,7 +40,6 @@ const ActivityLog = sequelize.define(
       comment: 'sector source for log',
     },
 
-
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -79,8 +78,6 @@ ActivityLog.associate = (models) => {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   });
-
-
 };
 
 module.exports = ActivityLog;

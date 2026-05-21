@@ -102,7 +102,6 @@ const getAdmins = async (req, res) => {
           model: Division,
           as: 'division',
         },
-
       ],
       order: [['created_at', 'DESC']],
     });
@@ -985,7 +984,6 @@ const exportReport = async (req, res) => {
   }
 };
 
-
 // Get complaint trends for analytics
 const getComplaintTrends = async (req, res) => {
   try {
@@ -1002,7 +1000,6 @@ const getComplaintTrends = async (req, res) => {
         [Op.between]: [startDate, endDate],
       },
     };
-
 
     // Get complaints within date range
     const complaints = await PublicComplaint.findAll({
@@ -1267,7 +1264,6 @@ const getPublicRatingsAdmin = async (req, res) => {
           as: 'employee',
           attributes: ['id', 'first_name_en', 'last_name_en', 'position_en'],
         },
-
       ],
       order: [['created_at', 'DESC']],
     });
@@ -1309,12 +1305,7 @@ const respondToFeedback = async (req, res) => {
       status: 'responded',
       responded_at: new Date(),
     });
-    await ActivityLogService.logUpdate(
-      'feedback',
-      feedback.id,
-      req.user?.id,
-      feedback.sector_id
-    );
+    await ActivityLogService.logUpdate('feedback', feedback.id, req.user?.id, feedback.sector_id);
     res.json({
       message: 'Response added successfully',
       feedback: {
@@ -1360,12 +1351,7 @@ const respondToPublicFeedback = async (req, res) => {
       status: 'responded',
     });
 
-    await ActivityLogService.logUpdate(
-      'feedback',
-      feedback.id,
-      req.user?.id,
-      feedback.sector_id
-    );
+    await ActivityLogService.logUpdate('feedback', feedback.id, req.user?.id, feedback.sector_id);
     res.json({
       message: 'Response added successfully',
       feedback: {
@@ -1413,7 +1399,6 @@ const exportEmployees = async (req, res) => {
         { model: require('../models').Sector, as: 'sector', required: false },
         { model: require('../models').Division, as: 'division', required: false },
         { model: require('../models').Department, as: 'department', required: false },
-
       ],
       order: [['created_at', 'DESC']],
     });
@@ -1578,7 +1563,6 @@ const exportComplaints = async (req, res) => {
         { model: require('../models').Division, as: 'division', required: false },
         { model: require('../models').Employee, as: 'employee', required: false },
         { model: require('../models').Department, as: 'department', required: false },
-
       ],
       order: [['created_at', 'DESC']],
     });

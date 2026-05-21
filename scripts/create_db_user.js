@@ -17,7 +17,10 @@ async function createDatabaseAndUser() {
       connected = true;
       break;
     } catch (err) {
-      if (err.code === 'ER_ACCESS_DENIED_ERROR' || err.code === 'ER_ACCESS_DENIED_NO_PASSWORD_ERROR') {
+      if (
+        err.code === 'ER_ACCESS_DENIED_ERROR' ||
+        err.code === 'ER_ACCESS_DENIED_NO_PASSWORD_ERROR'
+      ) {
         continue;
       } else {
         console.error('Connection error:', err);
@@ -33,24 +36,30 @@ async function createDatabaseAndUser() {
 
   try {
     console.log('Creating database diredaod_office_management...');
-    await connection.query("CREATE DATABASE IF NOT EXISTS \`diredaod_office_management\`;");
+    await connection.query('CREATE DATABASE IF NOT EXISTS \`diredaod_office_management\`;');
 
     console.log('Creating user diredaod_office_management...');
-    await connection.query("CREATE USER IF NOT EXISTS 'diredaod_office_management'@'localhost' IDENTIFIED BY '123456789@abc';");
-    
+    await connection.query(
+      "CREATE USER IF NOT EXISTS 'diredaod_office_management'@'localhost' IDENTIFIED BY '123456789@abc';"
+    );
+
     // In some older mysql versions, IF NOT EXISTS might not work for CREATE USER or we might need ALTER USER
     // Let's force the password update just in case it exists:
     try {
-      await connection.query("ALTER USER 'diredaod_office_management'@'localhost' IDENTIFIED BY '123456789@abc';");
+      await connection.query(
+        "ALTER USER 'diredaod_office_management'@'localhost' IDENTIFIED BY '123456789@abc';"
+      );
     } catch (e) {
       // ignore
     }
 
     console.log('Granting privileges...');
-    await connection.query("GRANT ALL PRIVILEGES ON \`diredaod_office_management\`.* TO 'diredaod_office_management'@'localhost';");
+    await connection.query(
+      "GRANT ALL PRIVILEGES ON \`diredaod_office_management\`.* TO 'diredaod_office_management'@'localhost';"
+    );
 
     console.log('Flushing privileges...');
-    await connection.query("FLUSH PRIVILEGES;");
+    await connection.query('FLUSH PRIVILEGES;');
 
     console.log('✅ Database and user created successfully!');
   } catch (err) {

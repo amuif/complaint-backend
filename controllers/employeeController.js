@@ -94,7 +94,6 @@ const getEmployeesAdmin = async (req, res) => {
           as: 'team',
           required: false,
         },
-
       ],
       order: [['created_at', 'DESC']],
     });
@@ -191,7 +190,6 @@ const createEmployee = async (req, res) => {
       position_en: position_en || actualPosition || '',
       position_am: position_am || actualPosition || '',
       position_af: position_af || actualPosition || '',
-
 
       // Organizational hierarchy fields
       works_in_head_office: works_in_head_office,

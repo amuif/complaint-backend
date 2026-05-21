@@ -45,7 +45,6 @@ router.get('/departments/:departmentId/teams', publicController.getTeamsByDepart
 
 router.get('/departments', publicController.getDepartments);
 
-
 // Get offices by department
 router.get('/departments/:departmentId/offices', publicController.getOfficesByDepartment);
 

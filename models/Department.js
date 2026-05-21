@@ -25,7 +25,6 @@ const Department = sequelize.define(
       allowNull: true,
       references: { model: 'divisions', key: 'id' },
     },
-
   },
   {
     tableName: 'departments',
@@ -95,8 +94,6 @@ Department.associate = (models) => {
     foreignKey: 'sector_id',
     as: 'sector',
   });
-
-
 
   // Teams & Offices
   Department.hasMany(models.Team, {

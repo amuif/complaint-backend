@@ -56,12 +56,7 @@ const createFeedback = async (req, res) => {
     };
 
     const feedback = await Feedback.create(feedbackData);
-    await ActivityLogService.logCreate(
-      'feedback',
-      feedback.id,
-      req.user?.id,
-      feedback.sector_id
-    );
+    await ActivityLogService.logCreate('feedback', feedback.id, req.user?.id, feedback.sector_id);
 
     let employeeDetails = null;
     if (employee_id) {
@@ -160,8 +155,6 @@ const getFeedbackAdmin = async (req, res) => {
           model: Employee,
           as: 'employee',
         },
-
-
       ],
       order: [['created_at', 'DESC']],
     });

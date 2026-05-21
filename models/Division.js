@@ -26,9 +26,7 @@ const Division = sequelize.define(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    indexes: [
-      { fields: ['sector_id'], name: 'idx_division_sector' },
-    ],
+    indexes: [{ fields: ['sector_id'], name: 'idx_division_sector' }],
   }
 );
 
@@ -38,8 +36,6 @@ Division.associate = (models) => {
     foreignKey: 'sector_id',
     as: 'sector',
   });
-
-
 
   // Organizational Structure (hasMany)
   Division.hasMany(models.Department, {

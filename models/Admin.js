@@ -120,7 +120,6 @@ const Admin = sequelize.define(
 
 // Associations
 Admin.associate = (models) => {
-
   Admin.belongsTo(models.Department, {
     foreignKey: 'department_id',
     onDelete: 'SET NULL',

@@ -14,7 +14,6 @@ const { validateLanguage, addVoiceFileUrl } = require('../utils/helpers');
 const { v4: uuidv4 } = require('uuid');
 const { Op, where } = require('sequelize');
 
-
 // Create complaint
 const createComplaint = async (req, res) => {
   try {
@@ -170,8 +169,6 @@ const getComplaintsAdmin = async (req, res) => {
           as: 'sector',
         },
 
-
-
         {
           model: Employee,
           as: 'employee',
@@ -225,8 +222,6 @@ const resolveComplaint = async (req, res) => {
     if (admin.role === 'Admin' && complaint.department_id !== admin.department_id) {
       return res.status(403).json({ message: 'Cannot resolve complaint from another department' });
     }
-
-
 
     if (isPublicComplaint) {
       await PublicComplaint.update({ status }, { where: { id } });

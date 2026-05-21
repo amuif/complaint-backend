@@ -1517,7 +1517,7 @@ const publicController = {
       const sectors = await Sector.findAll({
         order: [['name_en', 'ASC']],
       });
-      console.log("Sectors",sectors)
+      console.log('Sectors', sectors);
 
       res.json({
         success: true,

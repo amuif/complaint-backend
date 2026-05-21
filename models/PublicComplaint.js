@@ -129,7 +129,6 @@ PublicComplaint.associate = (models) => {
     as: 'department',
   });
 
-
   PublicComplaint.belongsTo(models.Division, {
     foreignKey: 'division_id',
     as: 'division',

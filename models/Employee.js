@@ -46,7 +46,6 @@ const Employee = sequelize.define(
       references: { model: 'teams', key: 'id' },
     },
 
-
     works_in_head_office: { type: DataTypes.BOOLEAN },
 
     email: { type: DataTypes.STRING(100), allowNull: true },

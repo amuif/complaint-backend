@@ -169,7 +169,6 @@ router.put(
   updateDepartment
 );
 
-
 // Employee management routes (Admin access required)
 router.get(
   '/employees',
@@ -269,7 +268,6 @@ router.get(
   restrictTo('SuperAdmin', 'SuperAdminSuppoerter', 'Admin', 'Editor'),
   exportReport
 );
-
 
 //notifications
 router.get(

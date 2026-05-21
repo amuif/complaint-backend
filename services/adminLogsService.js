@@ -2,13 +2,7 @@ const { ActivityLog } = require('../models');
 
 class ActivityLogService {
   // Log creation with additional fields
-  static async logCreate(
-    entityType,
-    entityId,
-    adminId = null,
-    details = null,
-    sectorId = null
-  ) {
+  static async logCreate(entityType, entityId, adminId = null, details = null, sectorId = null) {
     try {
       await ActivityLog.create({
         admin_id: adminId,
@@ -25,13 +19,7 @@ class ActivityLogService {
   }
 
   // Log update with additional fields
-  static async logUpdate(
-    entityType,
-    entityId,
-    adminId = null,
-    details = null,
-    sectorId = null
-  ) {
+  static async logUpdate(entityType, entityId, adminId = null, details = null, sectorId = null) {
     try {
       await ActivityLog.create({
         admin_id: adminId,
@@ -48,13 +36,7 @@ class ActivityLogService {
   }
 
   // Log deletion with additional fields
-  static async logDelete(
-    entityType,
-    entityId,
-    adminId = null,
-    details = null,
-    sectorId = null
-  ) {
+  static async logDelete(entityType, entityId, adminId = null, details = null, sectorId = null) {
     try {
       await ActivityLog.create({
         admin_id: adminId,

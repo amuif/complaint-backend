@@ -52,7 +52,6 @@ const PublicFeedback = sequelize.define(
       comment: 'Target employee',
     },
 
-
     subject: {
       type: DataTypes.STRING(200),
       allowNull: false,

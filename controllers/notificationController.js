@@ -35,7 +35,6 @@ const getNotifications = async (req, res) => {
           as: 'sector',
           attributes: ['id', 'name_en', 'name_am', 'name_af'], // Only select needed fields
         },
-
       ],
       order: [['created_at', 'DESC']],
     });
