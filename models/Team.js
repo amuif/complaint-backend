@@ -62,7 +62,11 @@ const Team = sequelize.define(
         key: 'id',
       },
     },
- subcity_id: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'subcities', key: 'id' } },
+    subcity_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'subcities', key: 'id' },
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

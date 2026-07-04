@@ -14,7 +14,11 @@ const Division = sequelize.define(
     office_location_en: { type: DataTypes.STRING(50), allowNull: false },
     office_location_am: { type: DataTypes.STRING(50), allowNull: false },
     office_location_af: { type: DataTypes.STRING(50), allowNull: false },
-  subcity_id: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'subcities', key: 'id' } },
+    subcity_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'subcities', key: 'id' },
+    },
     sector_id: {
       type: DataTypes.INTEGER,
       allowNull: true,

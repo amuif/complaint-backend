@@ -14,7 +14,7 @@ const {
   Sector,
   Division,
   Team,
-  Subcity
+  Subcity,
 } = require('../models');
 
 // Helper function to generate tracking codes

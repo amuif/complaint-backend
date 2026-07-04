@@ -25,7 +25,11 @@ const Department = sequelize.define(
       allowNull: true,
       references: { model: 'divisions', key: 'id' },
     },
-    subcity_id: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'subcities', key: 'id' } },
+    subcity_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'subcities', key: 'id' },
+    },
   },
   {
     tableName: 'departments',
