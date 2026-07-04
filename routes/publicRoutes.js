@@ -29,7 +29,8 @@ const submissionRateLimit = rateLimit({
 // =================================
 // SYSTEM INFO & CONFIGURATION
 // =================================
-
+// Get subcities
+router.get('/subcities', publicController.getSubcities);
 // Get departments for dropdowns based on frontend hierarchy
 // Get all sectors(sector leader)
 router.get('/sectors', publicController.getSectors);

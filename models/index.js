@@ -15,6 +15,7 @@ const Office = require('./Office');
 const Sector = require('./Sector');
 const Division = require('./Division');
 const Team = require('./Team');
+const Subcity = require('./Subcity');
 
 ActivityLog.belongsTo(Admin, { foreignKey: 'admin_id', as: 'admin' });
 ActivityLog.belongsTo(Sector, { foreignKey: 'sector_id', as: 'sector' });
@@ -204,6 +205,15 @@ Team.hasMany(PublicFeedback, {
   as: 'public_feedbacks',
 });
 
+Subcity.associate({
+  Division,
+  Department,
+  Sector,
+  Team,
+  Employee,
+  Admin,
+});
+
 module.exports = {
   Admin,
   Employee,
@@ -223,4 +233,5 @@ module.exports = {
   Sector,
   Division,
   Team,
+  Subcity,
 };
