@@ -437,10 +437,10 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-          {
-            model: Team,
-            as: 'team',
-          },
+          // {
+          //   model: Team,
+          //   as: 'team',
+          // },
         ],
         order: [['first_name_en', 'ASC']],
         limit: parseInt(limit),
@@ -600,10 +600,10 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-          {
-            model: Team,
-            as: 'team',
-          },
+          // {
+          //   model: Team,
+          //   as: 'team',
+          // },
         ],
         order: [['first_name_en', 'ASC']],
         limit: parseInt(limit),
@@ -796,10 +796,10 @@ const publicController = {
             model: Department,
             as: 'department',
           },
-          {
-            model: Team,
-            as: 'team',
-          },
+          // {
+          //   model: Team,
+          //   as: 'team',
+          // },
         ],
         order: [['first_name_en', 'ASC']],
         limit: parseInt(limit),
@@ -1068,10 +1068,10 @@ const publicController = {
             model: Division,
             as: 'division',
           },
-          {
-            model: Team,
-            as: 'team',
-          },
+          // {
+          //   model: Team,
+          //   as: 'team',
+          // },
           {
             model: Employee,
             as: 'employee',

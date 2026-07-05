@@ -173,10 +173,10 @@ const getComplaintsAdmin = async (req, res) => {
           model: Employee,
           as: 'employee',
         },
-        {
-          model: Team,
-          as: 'team',
-        },
+        // {
+        //   model: Team,
+        //   as: 'team',
+        // },
         {
           model: Office,
           as: 'office',

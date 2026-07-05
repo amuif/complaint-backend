@@ -89,11 +89,11 @@ const getEmployeesAdmin = async (req, res) => {
           as: 'department',
           required: false,
         },
-        {
-          model: require('../models').Team,
-          as: 'team',
-          required: false,
-        },
+        // {
+        //   model: require('../models').Team,
+        //   as: 'team',
+        //   required: false,
+        // },
       ],
       order: [['created_at', 'DESC']],
     });

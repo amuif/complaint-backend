@@ -147,10 +147,10 @@ const getFeedbackAdmin = async (req, res) => {
           as: 'department',
           attributes: ['id', 'name_en', 'name_am', 'name_af', 'division_id'],
         },
-        {
-          model: Team,
-          as: 'team',
-        },
+        // {
+        //   model: Team,
+        //   as: 'team',
+        // },
         {
           model: Employee,
           as: 'employee',
